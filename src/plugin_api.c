@@ -49,9 +49,14 @@ void imgload_plugin_log(ImgloadPlugin plugin, ImgloadLogLevel level, const char*
 	va_list list;
 	va_start(list, format);
 
-	vsnprintf(buffer, sizeof(buffer) / sizeof(buffer[0]), format, list);
+	int ret = vsnprintf(buffer, sizeof(buffer) / sizeof(buffer[0]), format, list);
 
-	print_to_log(plugin->context, level, "[%s] %s", plugin->info.id, buffer);
+	if (ret < 0)
+	{
+		print_to_log(plugin->context, level, "[%s] Failed to evaluate format string '%s'\n", plugin->info.id, format);
+	}
+
+	print_to_log(plugin->context, level, "[%s] %s\n", plugin->info.id, buffer);
 
 	va_end(list);
 }

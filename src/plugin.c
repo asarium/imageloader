@@ -7,20 +7,20 @@
 
 static ImgloadErrorCode validate_plugin(ImgloadPlugin plugin)
 {
+    if (plugin->info.id == NULL)
+    {
+        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "A plugin has to have an identification string!\n");
+        return IMGLOAD_ERR_PLUGIN_INVALID;
+    }
+
     if (plugin->funcs.probe == NULL)
     {
-        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "A plugin has to have a probe function!");
+        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "[%s] A plugin has to have a probe function!\n", plugin->info.id);
         return IMGLOAD_ERR_PLUGIN_INVALID;
     }
     if (plugin->funcs.init_image == NULL)
     {
-        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "A plugin has to have an image init function!");
-        return IMGLOAD_ERR_PLUGIN_INVALID;
-    }
-
-    if (plugin->info.id == NULL)
-    {
-        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "A plugin has to have an identification string!");
+        print_to_log(plugin->context, IMGLOAD_LOG_ERROR, "[%s] A plugin has to have an image init function!\n", plugin->info.id);
         return IMGLOAD_ERR_PLUGIN_INVALID;
     }
 

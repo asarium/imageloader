@@ -1,6 +1,7 @@
 #include "image.h"
 #include "memory.h"
 #include "plugin.h"
+#include "context.h"
 
 #include <string.h>
 #include <assert.h>
