@@ -6,7 +6,7 @@
 
 #include "plugin.h"
 
-typedef struct ImgloadContextImpl
+struct ImgloadContextImpl
 {
     struct
     {
@@ -16,8 +16,8 @@ typedef struct ImgloadContextImpl
 
     struct
     {
-        ImgloadPluginImpl* head;
-        ImgloadPluginImpl* tail;
+        ImgloadPlugin head;
+        ImgloadPlugin tail;
     } plugins;
 
     struct
@@ -25,10 +25,6 @@ typedef struct ImgloadContextImpl
         ImgloadLogHandler handler;
         void* ud;
     } log;
-
-    const char* last_error;
-} ImgloadContextImpl;
-
-void ctx_set_last_error(ImgloadContext ctx, const char* err);
+};
 
 #endif //IMAGELOADER_CONTEXT_H

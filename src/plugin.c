@@ -33,13 +33,11 @@ ImgloadErrorCode plugin_init(ImgloadContext ctx, ImgloadPluginLoader loader, voi
 
     *plugin_out = NULL;
 
-    ImgloadPluginImpl* plugin = mem_realloc(ctx, NULL, sizeof(ImgloadPluginImpl));
+    ImgloadPlugin plugin = mem_reallocz(ctx, NULL, sizeof(struct ImgloadPluginImpl));
     if (plugin == NULL)
     {
         return IMGLOAD_ERR_OUT_OF_MEMORY;
     }
-    memset(plugin, 0, sizeof(ImgloadPluginImpl));
-
     plugin->context = ctx;
 
     ImgloadErrorCode err = loader(plugin, param);

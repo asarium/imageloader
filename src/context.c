@@ -2,17 +2,37 @@
 
 #include "context.h"
 #include "memory.h"
+#include "log.h"
+
+#include "project.h"
 
 #include <string.h>
 #include <assert.h>
 
-ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadMemoryAllocator* allocator,
-                                                        void* alloc_ud)
+#if WITH_LIBDDSIMG
+#include "ddsimg.h"
+#endif
+
+static int register_default_plugins(ImgloadContext ctx)
+{
+#if WITH_LIBDDSIMG
+    if (imgload_context_add_plugin(ctx, ddsimg_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
+    {
+        print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default libddsimg plugin!\n");
+        return 0;
+    }
+#endif
+
+    return 1;
+}
+
+ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadContextFlags flags,
+    ImgloadMemoryAllocator* allocator, void* alloc_ud)
 {
     assert(ctx_ptr != NULL);
     assert(allocator != NULL);
 
-    ImgloadContextImpl* ctx = allocator->realloc(alloc_ud, NULL, sizeof(ImgloadContextImpl));
+    ImgloadContext ctx = allocator->realloc(alloc_ud, NULL, sizeof(struct ImgloadContextImpl));
 
     if (ctx == NULL)
     {
@@ -22,6 +42,14 @@ ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, Imgl
 
     ctx->mem.allocator = *allocator;
     ctx->mem.ud = alloc_ud;
+
+    if (!(flags & IMGLOAD_CONTEXT_NO_DEFAULT_PLUGINS))
+    {
+        if (!register_default_plugins(ctx))
+        {
+            return IMGLOAD_ERR_PLUGIN_ERROR;
+        }
+    }
 
     *ctx_ptr = ctx;
 
@@ -33,7 +61,7 @@ ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, Imgl
     assert(ctx != NULL);
     assert(loader_func != NULL);
 
-    ImgloadPluginImpl* plugin;
+    ImgloadPlugin plugin;
     
     ImgloadErrorCode err = plugin_init(ctx, loader_func, plugin_param, &plugin);
 
@@ -60,7 +88,7 @@ ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, Imgl
     return IMGLOAD_ERR_NO_ERROR;
 }
 
-ImgloadErrorCode imgload_context_set_log_callback(ImgloadContext ctx, ImgloadLogHandler handler, void* ud)
+ImgloadErrorCode IMGLOAD_API imgload_context_set_log_callback(ImgloadContext ctx, ImgloadLogHandler handler, void* ud)
 {
     assert(ctx != NULL);
     assert(handler != NULL);
@@ -68,12 +96,7 @@ ImgloadErrorCode imgload_context_set_log_callback(ImgloadContext ctx, ImgloadLog
     ctx->log.handler = handler;
     ctx->log.ud = ud;
 
-	return IMGLOAD_ERR_NO_ERROR;
-}
-
-const char* IMGLOAD_API imgload_context_get_error(ImgloadContext ctx)
-{
-    return ctx->last_error;
+    return IMGLOAD_ERR_NO_ERROR;
 }
 
 ImgloadErrorCode IMGLOAD_API imgload_context_free(ImgloadContext ctx)
@@ -83,7 +106,7 @@ ImgloadErrorCode IMGLOAD_API imgload_context_free(ImgloadContext ctx)
     // Free plugins
     while (ctx->plugins.tail != NULL)
     {
-        ImgloadPluginImpl* plugin = ctx->plugins.tail;
+        ImgloadPlugin plugin = ctx->plugins.tail;
         ctx->plugins.tail = plugin->prev;
         plugin_free(plugin);
     }
@@ -94,9 +117,4 @@ ImgloadErrorCode IMGLOAD_API imgload_context_free(ImgloadContext ctx)
     mem_free(ctx, ctx);
 
     return IMGLOAD_ERR_NO_ERROR;
-}
-
-void ctx_set_last_error(ImgloadContext ctx, const char* err)
-{
-    ctx->last_error = err;
 }

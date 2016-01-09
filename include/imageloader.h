@@ -81,7 +81,13 @@ enum
     IMGLOAD_ERR_NO_ERROR = 0,
     IMGLOAD_ERR_OUT_OF_MEMORY = 1,
     IMGLOAD_ERR_PLUGIN_INVALID = 2,
-    IMGLOAD_UNSUPPORTED_FORMAT = 3,
+    IMGLOAD_ERR_UNSUPPORTED_FORMAT = 3,
+    IMGLOAD_ERR_PLUGIN_ERROR = 4,
+    IMGLOAD_ERR_IO_ERROR = 5,
+    IMGLOAD_ERR_OUT_OF_RANGE = 6,
+    IMGLOAD_ERR_NO_DATA = 7,
+    IMGLOAD_ERR_WRONG_TYPE = 8,
+    IMGLOAD_ERR_FILE_INVALID = 9,
 };
 typedef uint32_t ImgloadErrorCode;
 
@@ -93,6 +99,12 @@ enum
 	IMGLOAD_LOG_ERROR = 3,
 };
 typedef uint32_t ImgloadLogLevel;
+
+enum
+{
+    IMGLOAD_CONTEXT_NO_DEFAULT_PLUGINS = 1 << 0,
+};
+typedef uint32_t ImgloadContextFlags;
 
 /**
  * @brief Custom memory allocation functions
@@ -126,9 +138,7 @@ typedef ImgloadErrorCode (IMGLOAD_CALLBACK *ImgloadPluginLoader)(ImgloadPlugin p
 typedef ImgloadErrorCode(IMGLOAD_CALLBACK *ImgloadLogHandler)(void* ud, ImgloadLogLevel level, const char* text);
 
 
-ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadMemoryAllocator* allocator, void* alloc_ud);
-
-const char* IMGLOAD_API imgload_context_get_error(ImgloadContext ctx);
+ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadContextFlags flags, ImgloadMemoryAllocator* allocator, void* alloc_ud);
 
 ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, ImgloadPluginLoader loader_func, void* plugin_param);
 
@@ -159,13 +169,80 @@ typedef struct
      * @return The offset in the file after seeking
      */
     int64_t (IMGLOAD_CALLBACK *seek)(void* ud, int64_t offset, int whence);
-} ImgloadCustomIO;
+} ImgloadIO;
 
 typedef struct ImgloadImageImpl* ImgloadImage;
 
-ImgloadErrorCode IMGLOAD_API imgload_image_alloc(ImgloadContext ctx, ImgloadImage* image, ImgloadCustomIO* io, void* io_ud);
+enum
+{
+    IMGLOAD_PROPERTY_WIDTH = 0,
+    IMGLOAD_PROPERTY_HEIGHT = 1,
+    IMGLOAD_PROPERTY_DEPTH = 2,
+    IMGLOAD_PROPERTY_PLUGIN_DATA_1 = 3,
+    IMGLOAD_PROPERTY_PLUGIN_DATA_2 = 4,
+    IMGLOAD_PROPERTY_PLUGIN_DATA_3 = 5,
+    IMGLOAD_PROPERTY_PLUGIN_DATA_4 = 6,
 
-ImgloadErrorCode IMGLOAD_API imgload_read_header(ImgloadImage img);
+    IMGLOAD_PROPERTY_MAX = 7,
+};
+typedef uint32_t ImgloadProperty;
+
+enum
+{
+    IMGLOAD_PROPERTY_TYPE_UINT32 = 0,
+    IMGLOAD_PROPERTY_TYPE_INT32 = 1,
+    IMGLOAD_PROPERTY_TYPE_FLAOT = 2,
+    IMGLOAD_PROPERTY_TYPE_DOUBLE = 3,
+    IMGLOAD_PROPERTY_TYPE_STRING = 4,
+    IMGLOAD_PROPERTY_TYPE_COMPLEX = 5,
+};
+typedef uint32_t ImgloadPropertyType;
+
+enum
+{
+    IMGLOAD_FORMAT_R8G8B8A8 = 0,
+};
+typedef uint32_t ImgloadFormat;
+
+enum
+{
+    IMGLOAD_COMPRESSION_NONE = 0,
+    IMGLOAD_COMPRESSION_DXT1 = 1,
+    IMGLOAD_COMPRESSION_DXT2 = 2,
+    IMGLOAD_COMPRESSION_DXT3 = 3,
+    IMGLOAD_COMPRESSION_DXT4 = 4,
+    IMGLOAD_COMPRESSION_DXT5 = 5,
+};
+typedef uint32_t ImgloadCompression;
+
+ImgloadErrorCode IMGLOAD_API imgload_image_init(ImgloadContext ctx, ImgloadImage* image, ImgloadIO* io, void* io_ud);
+
+size_t IMGLOAD_API imgload_image_num_subimages(ImgloadImage img);
+
+ImgloadErrorCode IMGLOAD_API imgload_image_get_property(ImgloadImage img, size_t subimage, ImgloadProperty prop,
+    ImgloadPropertyType type, void* val_out);
+
+ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img);
+
+ImgloadCompression IMGLOAD_API imgload_image_compression(ImgloadImage img);
+
+ImgloadErrorCode IMGLOAD_API imgload_image_read_data(ImgloadImage img);
+
+typedef struct
+{
+    size_t width;
+    size_t height;
+    size_t depth;
+
+    size_t data_size;
+    void* data;
+} ImgloadImageData;
+
+size_t IMGLOAD_API imgload_image_num_mipmaps(ImgloadImage img, size_t subimage);
+
+ImgloadErrorCode IMGLOAD_API imgload_image_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap, ImgloadImageData* data);
+
+ImgloadErrorCode IMGLOAD_API imgload_image_data(ImgloadImage img, size_t subimage, size_t mipmap, ImgloadImageData* data);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_free(ImgloadImage image);
 
