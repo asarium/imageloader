@@ -1,9 +1,10 @@
 language: c
+sudo: false
 addons:
     apt:
         packages:
             - ninja-build
-			- libpng-dev
+            - libpng-dev
 matrix:
     include:
         - os: linux
