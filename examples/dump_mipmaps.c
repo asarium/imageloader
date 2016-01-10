@@ -91,6 +91,11 @@ int main(int argc, char** argv)
     }
 
     FILE* file = fopen(argv[1], "rb");
+    if (file == NULL)
+    {
+        printf("File could not be opened!");
+        return EXIT_FAILURE;
+    }
 
     ImgloadContext ctx;
 
@@ -100,6 +105,7 @@ int main(int argc, char** argv)
 
     if (imgload_context_alloc(&ctx, 0, &allocator, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
+        fclose(file);
         printf("Failed to create dds context!");
         return EXIT_FAILURE;
     }
@@ -111,6 +117,7 @@ int main(int argc, char** argv)
     ImgloadImage img;
     if (imgload_image_init(ctx, &img, &functions, file) != IMGLOAD_ERR_NO_ERROR)
     {
+        fclose(file);
         printf("Failed to allocate image structure!");
         return EXIT_FAILURE;
     }
@@ -135,6 +142,7 @@ int main(int argc, char** argv)
 
         if (depth != 1)
         {
+            fclose(file);
             printf("3D textures not supported!\n");
             return EXIT_FAILURE;
         }
@@ -170,5 +178,6 @@ int main(int argc, char** argv)
 
     imgload_context_free(ctx);
 
+    fclose(file);
     return EXIT_SUCCESS;
 }

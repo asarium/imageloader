@@ -231,7 +231,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     size_t stride = png_get_rowbytes(png_ptr, png_info);
     size_t total_size = img_height * stride;
 
-    //Alocate a buffer with enough space.
+    //Allocate a buffer with enough space.
     png_byte* data = (png_byte*)imgload_plugin_realloc(plugin, NULL, total_size);
     if (data == NULL)
     {

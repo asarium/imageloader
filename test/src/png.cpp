@@ -37,6 +37,8 @@ TEST_F(PNGTests, read_header)
     ASSERT_EQ(1, val);
 
     ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
 }
 
 TEST_F(PNGTests, read_data)
@@ -56,4 +58,6 @@ TEST_F(PNGTests, read_data)
     ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_data(img, 0, 0, &data));
 
     ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
 }

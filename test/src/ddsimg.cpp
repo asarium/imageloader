@@ -38,6 +38,8 @@ TEST_F(DDSTests, read_header)
     ASSERT_EQ(7, imgload_image_num_mipmaps(img, 0));
 
     ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
 }
 
 TEST_F(DDSTests, read_data)
@@ -65,4 +67,6 @@ TEST_F(DDSTests, read_data)
     }
 
     ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
 }
