@@ -4,11 +4,11 @@ set -e
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     cd travis-build
-    ninja dds_tests
-    ./test/dds_tests
+    ninja imgload_test
+    ./test/imgload_test
 elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    cmake --build travis-build --target dds_tests --config $CONFIGURATION | xcpretty -c
-    ./travis-build/test/$CONFIGURATION/dds_tests
+    cmake --build travis-build --target imgload_test --config $CONFIGURATION | xcpretty -c
+    ./travis-build/test/$CONFIGURATION/imgload_test
 fi
 
 
