@@ -19,6 +19,7 @@ endif()
 # Link runTests with what we want to test and the GTest and pthread library
 add_executable(imgload_test ${TEST_SOURCES})
 
+target_compile_features(imgload_test PRIVATE cxx_nullptr)
 set_target_properties(imgload_test PROPERTIES FOLDER "Test")
 
 if (MSVC)

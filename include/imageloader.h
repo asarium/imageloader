@@ -28,11 +28,7 @@ extern "C"
 		#define IMGLOAD_EXPORT
 	#endif
 #else
-	#if defined(__GNUC__) && __GNUC__ >= 4
-		#define IMGLOAD_EXPORT __attribute__ ((visibility("default")))
-	#else
-		#define IMGLOAD_EXPORT
-	#endif
+	#define IMGLOAD_EXPORT
 #endif
 
 #define IMGLOAD_API IMGLOAD_EXPORT IMGLOAD_CC

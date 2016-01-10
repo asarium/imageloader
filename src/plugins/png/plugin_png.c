@@ -221,7 +221,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
 
     //Here's one of the pointers we've defined in the error handler section:
     //Array of row pointers. One for every row.
-    png_bytep* rowPtrs = (png_bytep*)imgload_plugin_realloc(plugin, NULL, img_height * sizeof(png_bytep));
+    png_bytepp rowPtrs = (png_bytepp)imgload_plugin_realloc(plugin, NULL, img_height * sizeof(png_bytep));
     if (rowPtrs == NULL)
     {
         return IMGLOAD_ERR_OUT_OF_MEMORY;
