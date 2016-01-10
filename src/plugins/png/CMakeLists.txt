@@ -12,6 +12,7 @@ if (NOT TARGET png)
 endif()
 
 add_library(plugin_png STATIC plugin_png.c plugin_png.h)
+set_target_properties (plugin_png PROPERTIES C_STANDARD 99)
 
 set_target_properties(plugin_png PROPERTIES FOLDER "imageloader Plugins")
 
