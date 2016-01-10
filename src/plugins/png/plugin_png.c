@@ -121,35 +121,35 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_init_image(ImgloadPlugin plugin, Im
     png_uint_32 channels = png_get_channels(png_ptr, png_info);
     png_uint_32 color_type = png_get_color_type(png_ptr, png_info);
 
+    if (bitdepth == 16)
+    {
+        png_set_strip_16(png_ptr);
+    }
+
     switch (color_type) {
     case PNG_COLOR_TYPE_PALETTE:
         // Expand palette to rgb
         png_set_palette_to_rgb(png_ptr);
-        channels = 3;
-        color_type = PNG_COLOR_TYPE_RGB;
         break;
     case PNG_COLOR_TYPE_GRAY:
         if (bitdepth < 8)
             png_set_expand_gray_1_2_4_to_8(png_ptr);
-        // Always use 8 bits for grayscale
-        bitdepth = 8;
         break;
     }
 
     // if the image has a transperancy set.. convert it to a full Alpha channel..
     // Also make sure that is was RGB before
-    if (png_get_valid(png_ptr, png_info, PNG_INFO_tRNS)) {
-        if (color_type != PNG_COLOR_TYPE_RGB)
-        {
-            png_destroy_read_struct(&png_ptr, &png_info, NULL);
-            imgload_plugin_log(plugin, IMGLOAD_LOG_ERROR, "PNG has transparency chunks but was not in RGB format which is not supported!");
-            return IMGLOAD_ERR_UNSUPPORTED_FORMAT;
-        }
-
+    if (png_get_valid(png_ptr, png_info, PNG_INFO_tRNS))
+    {
         png_set_tRNS_to_alpha(png_ptr);
-        channels += 1;
-        color_type = PNG_FORMAT_RGBA;
     }
+
+    // Update the structure so we can use it later
+    png_read_update_info(png_ptr, png_info);
+
+    bitdepth = png_get_bit_depth(png_ptr, png_info);
+    channels = png_get_channels(png_ptr, png_info);
+    color_type = png_get_color_type(png_ptr, png_info);
 
     if (bitdepth != 8)
     {
@@ -194,9 +194,6 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_init_image(ImgloadPlugin plugin, Im
     uint32_t one = 1;
     imgload_plugin_image_set_property(img, 0, IMGLOAD_PROPERTY_DEPTH, IMGLOAD_PROPERTY_TYPE_UINT32, &one);
 
-    // Update the structure so we can use it later
-    png_read_update_info(png_ptr, png_info);
-
     PNGPointers* pointers = (PNGPointers*)imgload_plugin_realloc(plugin, NULL, sizeof(PNGPointers));
     if (pointers == NULL)
     {
@@ -222,23 +219,20 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     png_uint_32 img_width = png_get_image_width(png_ptr, png_info);
     png_uint_32 img_height = png_get_image_height(png_ptr, png_info);
 
-    png_uint_32 bitdepth = png_get_bit_depth(png_ptr, png_info);
-    png_uint_32 channels = png_get_channels(png_ptr, png_info);
-
     //Here's one of the pointers we've defined in the error handler section:
     //Array of row pointers. One for every row.
-    png_bytepp rowPtrs = (png_bytepp)imgload_plugin_realloc(plugin, NULL, img_height * sizeof(png_bytepp));
+    png_bytep* rowPtrs = (png_bytep*)imgload_plugin_realloc(plugin, NULL, img_height * sizeof(png_bytep));
     if (rowPtrs == NULL)
     {
         return IMGLOAD_ERR_OUT_OF_MEMORY;
     }
 
     //This is the length in bytes, of one row.
-    size_t stride = img_width * bitdepth * channels / 8;
+    size_t stride = png_get_rowbytes(png_ptr, png_info);
     size_t total_size = img_height * stride;
 
     //Alocate a buffer with enough space.
-    char* data = (char*)imgload_plugin_realloc(plugin, NULL, total_size);
+    png_byte* data = (png_byte*)imgload_plugin_realloc(plugin, NULL, total_size);
     if (data == NULL)
     {
         imgload_plugin_free(plugin, rowPtrs);
@@ -249,12 +243,8 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     //Adresses for every row in the buffer
 
     for (size_t i = 0; i < img_height; i++) {
-        //Set the pointer to the data pointer + i times the row stride.
-        //Notice that the row order is reversed with q.
-        //This is how at least OpenGL expects it,
-        //and how many other image loaders present the data.
         size_t q = i * stride;
-        rowPtrs[i] = (png_bytep)data + q;
+        rowPtrs[i] = data + q;
     }
 
     if (png_error_occured(png_ptr))

@@ -9,8 +9,14 @@ option(WITH_PNG "Build with PNG support by using libpng" TRUE)
 
 option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
 
+option(IMGLOADER_BUILD_EXAMPLES "Build examples for imageloader" TRUE)
+
 add_subdirectory(src)
 
 if(IMGLOADER_BUILD_TESTS)
 	add_subdirectory(test)
+endif()
+
+if (IMGLOADER_BUILD_EXAMPLES)
+	add_subdirectory(examples)
 endif()
