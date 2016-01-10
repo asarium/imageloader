@@ -69,7 +69,7 @@ static void writeTGA(const char* name, uint32_t width, uint32_t height, void* da
     {
         for (x = 0; x < width; ++x)
         {
-            size_t offset = y * height + x;
+            size_t offset = y * width + x;
             Color8888_t c = pixel_data[offset];
 
             putc(c.b, outf);
