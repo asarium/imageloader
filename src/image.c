@@ -46,12 +46,12 @@ ImgloadErrorCode IMGLOAD_API imgload_image_init(ImgloadContext ctx, ImgloadImage
 
             if (err != IMGLOAD_ERR_NO_ERROR)
             {
-                mem_free(ctx, img);
+                imgload_image_free(img);
                 return err;
             }
             if (!validate_image(img))
             {
-                mem_free(ctx, img);
+                imgload_image_free(img);
                 return IMGLOAD_ERR_PLUGIN_ERROR;
             }
             img->plugin = current;
@@ -243,7 +243,6 @@ ImgloadErrorCode IMGLOAD_API imgload_image_free(ImgloadImage image)
         }
     }
 
-    // Free string properties
     for (size_t i = 0; i < image->n_frames; ++i)
     {
         ImageFrame* frame = &image->frames[i];
