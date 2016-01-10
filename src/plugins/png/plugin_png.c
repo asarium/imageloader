@@ -27,14 +27,14 @@ static bool png_error_occured(png_structp png_ptr)
     return true;
 }
 
-static png_voidp PNGCBAPI png_malloc_fn(png_structp png_ptr, png_size_t size)
+static png_voidp png_malloc_fn(png_structp png_ptr, png_size_t size)
 {
     ImgloadPlugin plugin = (ImgloadPlugin)png_get_mem_ptr(png_ptr);
 
     return imgload_plugin_realloc(plugin, NULL, size);
 }
 
-static void PNGCBAPI png_free_fn(png_structp png_ptr, png_voidp ptr)
+static void png_free_fn(png_structp png_ptr, png_voidp ptr)
 {
     ImgloadPlugin plugin = (ImgloadPlugin)png_get_mem_ptr(png_ptr);
 
@@ -42,7 +42,7 @@ static void PNGCBAPI png_free_fn(png_structp png_ptr, png_voidp ptr)
 }
 
 
-static void PNGCBAPI png_user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+static void png_user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
     ImgloadImage img = (ImgloadImage)png_get_io_ptr(png_ptr);
 
@@ -55,7 +55,7 @@ static void PNGCBAPI png_user_read_data(png_structp png_ptr, png_bytep data, png
 }
 
 
-static void PNGCBAPI png_error_fn(png_structp png_ptr, png_const_charp message)
+static void png_error_fn(png_structp png_ptr, png_const_charp message)
 {
     ImgloadPlugin plugin = (ImgloadPlugin)png_get_error_ptr(png_ptr);
 
@@ -64,7 +64,7 @@ static void PNGCBAPI png_error_fn(png_structp png_ptr, png_const_charp message)
     png_longjmp(png_ptr, 1);
 }
 
-static void PNGCBAPI png_warning_fn(png_structp png_ptr, png_const_charp message)
+static void png_warning_fn(png_structp png_ptr, png_const_charp message)
 {
     ImgloadPlugin plugin = (ImgloadPlugin)png_get_error_ptr(png_ptr);
 
