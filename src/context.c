@@ -12,6 +12,9 @@
 #if WITH_LIBDDSIMG
 #include "ddsimg.h"
 #endif
+#if WITH_PNG
+#include "plugin_png.h"
+#endif
 
 static int register_default_plugins(ImgloadContext ctx)
 {
@@ -19,6 +22,13 @@ static int register_default_plugins(ImgloadContext ctx)
     if (imgload_context_add_plugin(ctx, ddsimg_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default libddsimg plugin!\n");
+        return 0;
+    }
+#endif
+#if WITH_PNG
+    if (imgload_context_add_plugin(ctx, png_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
+    {
+        print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default png plugin!\n");
         return 0;
     }
 #endif

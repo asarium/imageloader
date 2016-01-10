@@ -201,6 +201,8 @@ typedef uint32_t ImgloadPropertyType;
 enum
 {
     IMGLOAD_FORMAT_R8G8B8A8 = 0,
+    IMGLOAD_FORMAT_R8G8B8 = 1,
+    IMGLOAD_FORMAT_GRAY8 = 2,
 };
 typedef uint32_t ImgloadFormat;
 
@@ -218,6 +220,8 @@ typedef uint32_t ImgloadCompression;
 ImgloadErrorCode IMGLOAD_API imgload_image_init(ImgloadContext ctx, ImgloadImage* image, ImgloadIO* io, void* io_ud);
 
 size_t IMGLOAD_API imgload_image_num_subimages(ImgloadImage img);
+
+size_t IMGLOAD_API imgload_image_num_mipmaps(ImgloadImage img, size_t subimage);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_get_property(ImgloadImage img, size_t subimage, ImgloadProperty prop,
     ImgloadPropertyType type, void* val_out);
@@ -237,8 +241,6 @@ typedef struct
     size_t data_size;
     void* data;
 } ImgloadImageData;
-
-size_t IMGLOAD_API imgload_image_num_mipmaps(ImgloadImage img, size_t subimage);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap, ImgloadImageData* data);
 

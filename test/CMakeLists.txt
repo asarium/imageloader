@@ -12,6 +12,9 @@ set(TEST_SOURCES
 if (WITH_LIBDDSIMG)
 	set(TEST_SOURCES ${TEST_SOURCES} src/ddsimg.cpp)
 endif()
+if (WITH_PNG)
+	set(TEST_SOURCES ${TEST_SOURCES} src/png.cpp)
+endif()
 
 # Link runTests with what we want to test and the GTest and pthread library
 add_executable(imgload_test ${TEST_SOURCES})

@@ -5,7 +5,9 @@ project(imageloader)
 
 option(WITH_LIBDDSIMG "Build with DDS support by using libddsimg" TRUE)
 
-option(IMGLOADER_BUILD_TESTS "Build tests for iamgeloader" TRUE)
+option(WITH_PNG "Build with PNG support by using libpng" TRUE)
+
+option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
 
 add_subdirectory(src)
 
