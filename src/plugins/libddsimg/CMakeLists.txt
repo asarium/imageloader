@@ -10,6 +10,7 @@ set_target_properties(ddsimg PROPERTIES FOLDER "imageloader Plugins/Libs")
 set(SOURCE_FILES "ddsimg.c" "ddsimg.h")
 
 add_library(plugin_ddsimg STATIC "${SOURCE_FILES}")
+set_target_properties (plugin_ddsimg PROPERTIES C_STANDARD 99)
 
 set_target_properties(plugin_ddsimg PROPERTIES FOLDER "imageloader Plugins")
 
