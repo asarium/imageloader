@@ -4,7 +4,7 @@ addons:
     apt:
         packages:
             - ninja-build
-            - libpng-dev
+            - libpng16-dev
 matrix:
     include:
         - os: linux
