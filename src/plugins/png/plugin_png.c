@@ -16,7 +16,7 @@ typedef struct
     png_infop info_ptr;
 } PNGPointers;
 
-#define png_error_occured(png_ptr) setjmp(png_jmpbuf(png_ptr)) == 0
+#define png_error_occured(png_ptr) setjmp(png_jmpbuf(png_ptr)) != 0
 
 static png_voidp png_malloc_fn(png_structp png_ptr, png_size_t size)
 {
