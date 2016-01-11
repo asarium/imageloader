@@ -16,16 +16,7 @@ typedef struct
     png_infop info_ptr;
 } PNGPointers;
 
-
-static bool png_error_occured(png_structp png_ptr)
-{
-    if (setjmp(png_jmpbuf(png_ptr)) == 0)
-    {
-        return false;
-    }
-
-    return true;
-}
+#define png_error_occured(png_ptr) setjmp(png_jmpbuf(png_ptr)) == 0
 
 static png_voidp png_malloc_fn(png_structp png_ptr, png_size_t size)
 {
@@ -60,8 +51,8 @@ static void png_error_fn(png_structp png_ptr, png_const_charp message)
     ImgloadPlugin plugin = (ImgloadPlugin)png_get_error_ptr(png_ptr);
 
     imgload_plugin_log(plugin, IMGLOAD_LOG_ERROR, message);
-
-    png_longjmp(png_ptr, 1);
+    
+    longjmp(png_jmpbuf(png_ptr), 1);
 }
 
 static void png_warning_fn(png_structp png_ptr, png_const_charp message)
