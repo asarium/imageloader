@@ -33,7 +33,7 @@ static void IMGLOAD_CALLBACK mem_free(void* ud, void* mem)
     free(mem);
 }
 
-static void writeTGA(const char* name, uint32_t width, uint32_t height, void* data)
+static void writeTGA(const char* name, ImgloadImageData* data)
 {
     Color8888_t* pixel_data = (Color8888_t*) data;
 
@@ -57,19 +57,19 @@ static void writeTGA(const char* name, uint32_t width, uint32_t height, void* da
     putc(0, outf);           /* X origin */
     putc(0, outf);
     putc(0, outf);           /* y origin */
-    putc((width & 0x00FF), outf);
-    putc((width & 0xFF00) / 256, outf);
-    putc((height & 0x00FF), outf);
-    putc((height & 0xFF00) / 256, outf);
+    putc((data->width & 0x00FF), outf);
+    putc((data->width & 0xFF00) / 256, outf);
+    putc((data->height & 0x00FF), outf);
+    putc((data->height & 0xFF00) / 256, outf);
     putc(32, outf);                        /* 32 bit bitmap */
     putc(32, outf);                     // Origin is top left
 
     size_t x, y;
-    for (y = 0; y < height; ++y)
+    for (y = 0; y < data->height; ++y)
     {
-        for (x = 0; x < width; ++x)
+        for (x = 0; x < data->width; ++x)
         {
-            size_t offset = y * width + x;
+            size_t offset = y * (data->stride / 4) + x;
             Color8888_t c = pixel_data[offset];
 
             putc(c.b, outf);

@@ -232,6 +232,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK plugin_read_data(ImgloadPlugin plugin, 
                 new_data.height = (size_t)data.height;
                 new_data.depth = (size_t)data.depth;
 
+                new_data.stride = new_data.width * 4; // Format is always 32 bit RGBA
                 new_data.data_size = data.data_size;
                 new_data.data = data.data;
 

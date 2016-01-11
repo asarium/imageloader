@@ -234,6 +234,7 @@ typedef struct
     size_t height;
     size_t depth;
 
+    size_t stride;
     size_t data_size;
     void* data;
 } ImgloadImageData;

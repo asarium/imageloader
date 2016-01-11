@@ -5,7 +5,6 @@
 
 #include <png.h>
 
-#include <stdbool.h>
 #include <inttypes.h>
 
 // Parts of this code are based on this tutorial: http://www.piko3d.net/tutorials/libpng-tutorial-loading-png-files-from-streams/
@@ -109,7 +108,6 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_init_image(ImgloadPlugin plugin, Im
     png_uint_32 img_height = png_get_image_height(png_ptr, png_info);
 
     png_uint_32 bitdepth = png_get_bit_depth(png_ptr, png_info);
-    png_uint_32 channels = png_get_channels(png_ptr, png_info);
     png_uint_32 color_type = png_get_color_type(png_ptr, png_info);
 
     if (bitdepth == 16)
@@ -139,7 +137,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_init_image(ImgloadPlugin plugin, Im
     png_read_update_info(png_ptr, png_info);
 
     bitdepth = png_get_bit_depth(png_ptr, png_info);
-    channels = png_get_channels(png_ptr, png_info);
+    uint32_t channels = png_get_channels(png_ptr, png_info);
     color_type = png_get_color_type(png_ptr, png_info);
 
     if (bitdepth != 8)
@@ -258,6 +256,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     img_data.height = img_height;
     img_data.depth = 1;
 
+    img_data.stride = stride;
     img_data.data_size = total_size;
     img_data.data = data;
 
