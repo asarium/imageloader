@@ -1,0 +1,3 @@
+[submodule "src/plugins/libddsimg/libddsimg"]
+	path = src/plugins/libddsimg/libddsimg
+	url = https://github.com/asarium/libddsimg.git
