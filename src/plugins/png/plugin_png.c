@@ -244,7 +244,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
 
     for (size_t i = 0; i < img_height; i++) {
         size_t q = i * stride;
-        rowPtrs[img_height - 1 - i] = data + q;
+        rowPtrs[i] = data + q;
     }
 
     if (png_error_occured(png_ptr))

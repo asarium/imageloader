@@ -62,7 +62,7 @@ static void writeTGA(const char* name, uint32_t width, uint32_t height, void* da
     putc((height & 0x00FF), outf);
     putc((height & 0xFF00) / 256, outf);
     putc(32, outf);                        /* 32 bit bitmap */
-    putc(0, outf);
+    putc(32, outf);                     // Origin is top left
 
     size_t x, y;
     for (y = 0; y < height; ++y)
