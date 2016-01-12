@@ -7,7 +7,7 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     ninja all
     ./test/imgload_test
 elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    cmake --build travis-build --target all --config $CONFIGURATION | xcpretty -c
+    cmake --build travis-build --config $CONFIGURATION | xcpretty -c
     ./travis-build/test/$CONFIGURATION/imgload_test
 fi
 
