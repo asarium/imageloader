@@ -57,10 +57,10 @@ static void writeTGA(const char* name, ImgloadImageData* data)
     putc(0, outf);           /* X origin */
     putc(0, outf);
     putc(0, outf);           /* y origin */
-    putc((data->width & 0x00FF), outf);
-    putc((data->width & 0xFF00) / 256, outf);
-    putc((data->height & 0x00FF), outf);
-    putc((data->height & 0xFF00) / 256, outf);
+    putc((uint32_t)(data->width & 0x00FF), outf);
+    putc((uint32_t)(data->width & 0xFF00) / 256, outf);
+    putc((uint32_t)(data->height & 0x00FF), outf);
+    putc((uint32_t)(data->height & 0xFF00) / 256, outf);
     putc(32, outf);                        /* 32 bit bitmap */
     putc(32, outf);                     // Origin is top left
 
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
             if (err == IMGLOAD_ERR_NO_ERROR)
             {
                 snprintf(filename, sizeof(filename), "image-%u-%u.tga", i, j);
-                writeTGA(filename, (uint32_t)data.width, (uint32_t)data.height, data.data);
+                writeTGA(filename, &data);
             }
             else
             {
