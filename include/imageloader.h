@@ -134,7 +134,7 @@ typedef ImgloadErrorCode (IMGLOAD_CALLBACK *ImgloadPluginLoader)(ImgloadPlugin p
 typedef ImgloadErrorCode(IMGLOAD_CALLBACK *ImgloadLogHandler)(void* ud, ImgloadLogLevel level, const char* text);
 
 
-ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadContextFlags flags, ImgloadMemoryAllocator* allocator, void* alloc_ud);
+ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, ImgloadContextFlags flags, ImgloadMemoryAllocator* allocator, void* alloc_ud);
 
 ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, ImgloadPluginLoader loader_func, void* plugin_param);
 

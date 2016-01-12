@@ -36,8 +36,8 @@ static int register_default_plugins(ImgloadContext ctx)
     return 1;
 }
 
-ImgloadErrorCode IMGLOAD_API imgload_context_alloc(ImgloadContext* ctx_ptr, ImgloadContextFlags flags,
-    ImgloadMemoryAllocator* allocator, void* alloc_ud)
+ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, ImgloadContextFlags flags,
+                                                  ImgloadMemoryAllocator* allocator, void* alloc_ud)
 {
     assert(ctx_ptr != NULL);
     assert(allocator != NULL);

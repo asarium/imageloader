@@ -103,7 +103,7 @@ int main(int argc, char** argv)
     allocator.realloc = mem_realloc;
     allocator.free = mem_free;
 
-    if (imgload_context_alloc(&ctx, 0, &allocator, NULL) != IMGLOAD_ERR_NO_ERROR)
+    if (imgload_context_init(&ctx, 0, &allocator, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         fclose(file);
         printf("Failed to create dds context!");

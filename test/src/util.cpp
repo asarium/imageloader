@@ -57,7 +57,7 @@ namespace util
         allocator.realloc = mem_realloc;
         allocator.free = mem_free;
 
-        auto err = imgload_context_alloc(&ctx, 0, &allocator, nullptr);
+        auto err = imgload_context_init(&ctx, 0, &allocator, nullptr);
 
         if (err != IMGLOAD_ERR_NO_ERROR)
         {
