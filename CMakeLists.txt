@@ -11,7 +11,13 @@ option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
 
 option(IMGLOADER_BUILD_EXAMPLES "Build examples for imageloader" TRUE)
 
+option(IMGLOADER_BUILD_CPP_API "Build the C++ API" TRUE)
+
 add_subdirectory(src)
+
+if (IMGLOADER_BUILD_CPP_API)
+    add_subdirectory(cpp)
+endif()
 
 if(IMGLOADER_BUILD_TESTS)
 	add_subdirectory(test)
