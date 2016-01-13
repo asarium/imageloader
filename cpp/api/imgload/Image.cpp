@@ -1,8 +1,9 @@
 #include <imageloader.h>
-#include <bitset>
 
 #include "Image.hpp"
 #include "Exception.hpp"
+
+#include <stdexcept>
 
 namespace
 {

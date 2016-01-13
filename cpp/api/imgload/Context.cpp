@@ -4,6 +4,8 @@
 #include "Context.hpp"
 #include "Image.hpp"
 
+#include <stdexcept>
+
 namespace
 {
     void* IMGLOAD_CALLBACK class_realloc(void* ud, void* mem, size_t size)
