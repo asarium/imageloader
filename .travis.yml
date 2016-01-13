@@ -5,6 +5,7 @@ addons:
         packages:
             - ninja-build
             - libpng-dev
+            - gcc-5
 matrix:
     include:
         - os: linux
