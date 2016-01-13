@@ -15,6 +15,9 @@
 #if WITH_PNG
 #include "plugin_png.h"
 #endif
+#if WITH_STB_IMAGE
+#include "plugin_stb_image.h"
+#endif
 
 static int register_default_plugins(ImgloadContext ctx)
 {
@@ -29,6 +32,13 @@ static int register_default_plugins(ImgloadContext ctx)
     if (imgload_context_add_plugin(ctx, png_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default png plugin!\n");
+        return 0;
+    }
+#endif
+#if WITH_STB_IMAGE
+    if (imgload_context_add_plugin(ctx, stb_image_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
+    {
+        print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default stb_image plugin!\n");
         return 0;
     }
 #endif

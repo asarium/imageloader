@@ -7,6 +7,8 @@ option(WITH_LIBDDSIMG "Build with DDS support by using libddsimg" TRUE)
 
 option(WITH_PNG "Build with PNG support by using libpng" TRUE)
 
+option(WITH_STB_IMAGE "Build a plugin for loading images using stb_image" TRUE)
+
 option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
 
 option(IMGLOADER_BUILD_EXAMPLES "Build examples for imageloader" TRUE)

@@ -15,6 +15,9 @@ endif()
 if (WITH_PNG)
 	set(TEST_SOURCES ${TEST_SOURCES} src/png.cpp)
 endif()
+if (WITH_STB_IMAGE)
+	set(TEST_SOURCES ${TEST_SOURCES} src/stb_image.cpp)
+endif()
 
 # Link runTests with what we want to test and the GTest and pthread library
 add_executable(imgload_test ${TEST_SOURCES})
