@@ -91,37 +91,37 @@ namespace imgload
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<std::int32_t>()
+    inline SubImage::Type SubImage::getPropertyType<std::int32_t>()
     {
         return Type::Int32;
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<std::uint32_t>()
+    inline SubImage::Type SubImage::getPropertyType<std::uint32_t>()
     {
         return Type::Uint32;
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<float>()
+    inline SubImage::Type SubImage::getPropertyType<float>()
     {
         return Type::Float;
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<double>()
+    inline SubImage::Type SubImage::getPropertyType<double>()
     {
         return Type::Double;
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<const char*>()
+    inline SubImage::Type SubImage::getPropertyType<const char*>()
     {
         return Type::String;
     }
 
     template<>
-    SubImage::Type SubImage::getPropertyType<void*>()
+    inline SubImage::Type SubImage::getPropertyType<void*>()
     {
         return Type::Complex;
     }

@@ -26,6 +26,7 @@ namespace
             case imgload::Property::PLUGIN_DATA_4:
                 return IMGLOAD_PROPERTY_PLUGIN_DATA_4;
         }
+        return IMGLOAD_PROPERTY_WIDTH;
     }
 }
 
