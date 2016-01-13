@@ -12,6 +12,13 @@ typedef struct
     uint8_t a;
 } Color8888_t;
 
+typedef struct
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} Color888_t;
+
 static size_t IMGLOAD_CALLBACK file_read(void* ud, uint8_t* buf, size_t buf_len)
 {
     return fread(buf, 1, buf_len, (FILE*) ud);
@@ -33,7 +40,45 @@ static void IMGLOAD_CALLBACK mem_free(void* ud, void* mem)
     free(mem);
 }
 
-static void writeTGA(const char* name, ImgloadImageData* data)
+static void write24Bit(FILE* outf, ImgloadImageData* data)
+{
+    uint8_t* pixel_data = (uint8_t*)data->data;
+    size_t x, y;
+    for (y = 0; y < data->height; ++y)
+    {
+        for (x = 0; x < data->width; ++x)
+        {
+            size_t offset = y * data->stride + x * 3;
+            Color888_t c = *(Color888_t*)(pixel_data + offset);
+
+            putc(c.b, outf);
+            putc(c.g, outf);
+            putc(c.r, outf);
+        }
+    }
+    
+}
+
+static void write32Bit(FILE* outf, ImgloadImageData* data)
+{
+    uint8_t* pixel_data = (uint8_t*)data->data;
+    size_t x, y;
+    for (y = 0; y < data->height; ++y)
+    {
+        for (x = 0; x < data->width; ++x)
+        {
+            size_t offset = y * data->stride + x * 4;
+            Color8888_t c = *(Color8888_t*)(pixel_data + offset);
+
+            putc(c.b, outf);
+            putc(c.g, outf);
+            putc(c.r, outf);
+            putc(c.a, outf);
+        }
+    }
+}
+
+static void writeTGA(const char* name, ImgloadFormat format, ImgloadImageData* data)
 {
     Color8888_t* pixel_data = (Color8888_t*) data;
 
@@ -61,22 +106,23 @@ static void writeTGA(const char* name, ImgloadImageData* data)
     putc((uint32_t)(data->width & 0xFF00) / 256, outf);
     putc((uint32_t)(data->height & 0x00FF), outf);
     putc((uint32_t)(data->height & 0xFF00) / 256, outf);
-    putc(32, outf);                        /* 32 bit bitmap */
+    if (format == IMGLOAD_FORMAT_R8G8B8)
+    {
+        putc(24, outf);                        /* 24 bit bitmap */
+    }
+    else
+    {
+        putc(32, outf);                        /* 32 bit bitmap */
+    }
     putc(32, outf);                     // Origin is top left
 
-    size_t x, y;
-    for (y = 0; y < data->height; ++y)
+    if (format == IMGLOAD_FORMAT_R8G8B8)
     {
-        for (x = 0; x < data->width; ++x)
-        {
-            size_t offset = y * (data->stride / 4) + x;
-            Color8888_t c = pixel_data[offset];
-
-            putc(c.b, outf);
-            putc(c.g, outf);
-            putc(c.r, outf);
-            putc(c.a, outf);
-        }
+        write24Bit(outf, data);
+    }
+    else
+    {
+        write32Bit(outf, data);
     }
 
     fclose(outf);
@@ -122,11 +168,20 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
+    ImgloadFormat format = imgload_image_data_format(img);
+
+    if (format != IMGLOAD_FORMAT_R8G8B8 && format != IMGLOAD_FORMAT_R8G8B8A8)
+    {
+        printf("Only RGB and RGBA images are currently supported!");
+        return EXIT_FAILURE;
+    }
+
     size_t subimages = imgload_image_num_subimages(img);
 
     if (imgload_image_read_data(img) != IMGLOAD_ERR_NO_ERROR)
     {
         printf("Failed to read data!\n");
+        return EXIT_FAILURE;
     }
     char filename[255];
     uint32_t i, j;
@@ -165,7 +220,7 @@ int main(int argc, char** argv)
             if (err == IMGLOAD_ERR_NO_ERROR)
             {
                 snprintf(filename, sizeof(filename), "image-%u-%u.tga", i, j);
-                writeTGA(filename, &data);
+                writeTGA(filename, format, &data);
             }
             else
             {
