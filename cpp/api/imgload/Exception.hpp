@@ -15,7 +15,7 @@ namespace imgload
         { }
 
 
-        virtual const char* what() const noexcept override;
+        virtual const char* what() const noexcept;
     };
 }
 

@@ -2,12 +2,9 @@ language: cpp
 sudo: false
 addons:
     apt:
-        sources:
-            - ubuntu-toolchain-r-test
         packages:
             - ninja-build
             - libpng-dev
-            - gcc-5
 matrix:
     include:
         - os: linux
