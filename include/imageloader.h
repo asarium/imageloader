@@ -18,17 +18,17 @@ extern "C"
 #endif
 
 #if defined(WIN32)
-	#ifdef IMGLOAD_BUILDING_DLL
-		#ifdef IMGLOAD_COMPILING
-			#define IMGLOAD_EXPORT __declspec(dllexport)
-		#else
-			#define IMGLOAD_EXPORT __declspec(dllimport)
-		#endif
-	#else
-		#define IMGLOAD_EXPORT
-	#endif
+#ifdef IMGLOAD_BUILDING_DLL
+#ifdef IMGLOAD_COMPILING
+#define IMGLOAD_EXPORT __declspec(dllexport)
 #else
-	#define IMGLOAD_EXPORT
+#define IMGLOAD_EXPORT __declspec(dllimport)
+#endif
+#else
+#define IMGLOAD_EXPORT
+#endif
+#else
+#define IMGLOAD_EXPORT
 #endif
 
 #define IMGLOAD_API IMGLOAD_EXPORT IMGLOAD_CC
@@ -89,10 +89,10 @@ typedef uint32_t ImgloadErrorCode;
 
 enum
 {
-	IMGLOAD_LOG_DEBUG = 0,
-	IMGLOAD_LOG_INFO = 1,
-	IMGLOAD_LOG_WARNING = 2,
-	IMGLOAD_LOG_ERROR = 3,
+    IMGLOAD_LOG_DEBUG = 0,
+    IMGLOAD_LOG_INFO = 1,
+    IMGLOAD_LOG_WARNING = 2,
+    IMGLOAD_LOG_ERROR = 3,
 };
 typedef uint32_t ImgloadLogLevel;
 
@@ -115,28 +115,30 @@ typedef struct
      * @param size The wanted new size
      * @return The new memory or @c NULL on failure
      */
-    void* (IMGLOAD_CALLBACK *realloc)(void* ud, void* mem, size_t size);
+    void* (IMGLOAD_CALLBACK* realloc)(void* ud, void* mem, size_t size);
 
     /**
      * @brief Should behave like the standard free
      * @param ud The userdata passed at context creation
      * @param mem The memory to be freed
      */
-    void (IMGLOAD_CALLBACK *free)(void* ud, void* mem);
+    void (IMGLOAD_CALLBACK* free)(void* ud, void* mem);
 } ImgloadMemoryAllocator;
 
 typedef struct ImgloadContextImpl* ImgloadContext;
 
 typedef struct ImgloadPluginImpl* ImgloadPlugin;
 
-typedef ImgloadErrorCode (IMGLOAD_CALLBACK *ImgloadPluginLoader)(ImgloadPlugin plugin, void* parameter);
+typedef ImgloadErrorCode (IMGLOAD_CALLBACK* ImgloadPluginLoader)(ImgloadPlugin plugin, void* parameter);
 
-typedef ImgloadErrorCode(IMGLOAD_CALLBACK *ImgloadLogHandler)(void* ud, ImgloadLogLevel level, const char* text);
+typedef ImgloadErrorCode(IMGLOAD_CALLBACK* ImgloadLogHandler)(void* ud, ImgloadLogLevel level, const char* text);
 
 
-ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, ImgloadContextFlags flags, ImgloadMemoryAllocator* allocator, void* alloc_ud);
+ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, ImgloadContextFlags flags,
+                                                  ImgloadMemoryAllocator* allocator, void* alloc_ud);
 
-ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, ImgloadPluginLoader loader_func, void* plugin_param);
+ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, ImgloadPluginLoader loader_func,
+                                                        void* plugin_param);
 
 ImgloadErrorCode IMGLOAD_API imgload_context_set_log_callback(ImgloadContext ctx, ImgloadLogHandler handler, void* ud);
 
@@ -155,7 +157,7 @@ typedef struct
      * @param size The size to read into the buffer
      * @return The number of bytes read, return 0 at end of stream
      */
-    size_t (IMGLOAD_CALLBACK *read)(void* ud, uint8_t* buf, size_t size);
+    size_t (IMGLOAD_CALLBACK* read)(void* ud, uint8_t* buf, size_t size);
 
     /**
      * @brief Seek within the file
@@ -164,7 +166,7 @@ typedef struct
      * @param whence The seek mode using the stdio defines
      * @return The offset in the file after seeking
      */
-    int64_t (IMGLOAD_CALLBACK *seek)(void* ud, int64_t offset, int whence);
+    int64_t (IMGLOAD_CALLBACK* seek)(void* ud, int64_t offset, int whence);
 } ImgloadIO;
 
 typedef struct ImgloadImageImpl* ImgloadImage;
@@ -220,7 +222,7 @@ size_t IMGLOAD_API imgload_image_num_subimages(ImgloadImage img);
 size_t IMGLOAD_API imgload_image_num_mipmaps(ImgloadImage img, size_t subimage);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_get_property(ImgloadImage img, size_t subimage, ImgloadProperty prop,
-    ImgloadPropertyType type, void* val_out);
+                                                        ImgloadPropertyType type, void* val_out);
 
 ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img);
 
@@ -239,9 +241,11 @@ typedef struct
     void* data;
 } ImgloadImageData;
 
-ImgloadErrorCode IMGLOAD_API imgload_image_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap, ImgloadImageData* data);
+ImgloadErrorCode IMGLOAD_API imgload_image_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
+                                                           ImgloadImageData* data);
 
-ImgloadErrorCode IMGLOAD_API imgload_image_data(ImgloadImage img, size_t subimage, size_t mipmap, ImgloadImageData* data);
+ImgloadErrorCode IMGLOAD_API imgload_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
+                                                ImgloadImageData* data);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_free(ImgloadImage image);
 
