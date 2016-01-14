@@ -99,6 +99,7 @@ typedef uint32_t ImgloadLogLevel;
 enum
 {
     IMGLOAD_CONTEXT_NO_DEFAULT_PLUGINS = 1 << 0,
+    IMGLOAD_CONTEXT_FLIP_IMAGES = 1 << 1,
 };
 typedef uint32_t ImgloadContextFlags;
 

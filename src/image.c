@@ -7,6 +7,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include <imageloader.h>
 
 static bool validate_image(ImgloadImage img)
 {
@@ -350,5 +351,37 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
     mipmap1->raw.image = *data;
     mipmap1->raw.free_memory = transfer_ownership;
     mipmap1->raw.has_data = true;
+
+    if (img->context->flags & IMGLOAD_CONTEXT_FLIP_IMAGES)
+    {
+        // A buffer for holding one line of the image
+        uint8_t* buffer = (uint8_t*) mem_realloc(img->context, NULL, data->stride);
+
+        if (buffer == NULL)
+        {
+            print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate buffer for flipping image!");
+            return;
+        }
+
+        for (size_t d = 0; d < data->depth; ++d)
+        {
+            uint8_t* image_data = ((uint8_t*)data->data) + (d * data->height * data->stride);
+
+            // Images that have a height that's not divisible by 2 don't need to be handled
+            // specially because the row in the middle of the image doesn't need to be mirrored
+            size_t height_half = data->height / 2;
+            for (size_t y = 0; y < height_half; ++y)
+            {
+                uint8_t* top = image_data + y * data->stride;
+                uint8_t* bottom = image_data + (data->height - y - 1) * data->stride;
+
+                memcpy(buffer, top, data->stride);
+                memcpy(top, bottom, data->stride);
+                memcpy(bottom, buffer, data->stride);
+            }
+        }
+
+        mem_free(img->context, buffer);
+    }
 }
 

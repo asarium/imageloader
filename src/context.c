@@ -62,6 +62,7 @@ ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, Imglo
 
     ctx->mem.allocator = *allocator;
     ctx->mem.ud = alloc_ud;
+    ctx->flags = flags;
 
     if (!(flags & IMGLOAD_CONTEXT_NO_DEFAULT_PLUGINS))
     {

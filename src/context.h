@@ -14,6 +14,8 @@ struct ImgloadContextImpl
         void* ud;
     } mem;
 
+    ImgloadContextFlags flags;
+
     struct
     {
         ImgloadPlugin head;
