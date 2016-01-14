@@ -64,6 +64,8 @@ ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, Imglo
     ctx->mem.ud = alloc_ud;
     ctx->flags = flags;
 
+    ctx->log.minLevel = IMGLOAD_LOG_ERROR;
+
     if (!(flags & IMGLOAD_CONTEXT_NO_DEFAULT_PLUGINS))
     {
         if (!register_default_plugins(ctx))
@@ -116,6 +118,15 @@ ImgloadErrorCode IMGLOAD_API imgload_context_set_log_callback(ImgloadContext ctx
 
     ctx->log.handler = handler;
     ctx->log.ud = ud;
+
+    return IMGLOAD_ERR_NO_ERROR;
+}
+
+ImgloadErrorCode IMGLOAD_API imgload_context_set_log_level(ImgloadContext ctx, ImgloadLogLevel level)
+{
+    assert(ctx != NULL);
+
+    ctx->log.minLevel = level;
 
     return IMGLOAD_ERR_NO_ERROR;
 }

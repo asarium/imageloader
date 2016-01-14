@@ -26,6 +26,8 @@ struct ImgloadContextImpl
     {
         ImgloadLogHandler handler;
         void* ud;
+
+        ImgloadLogLevel minLevel;
     } log;
 };
 

@@ -13,6 +13,11 @@ void print_to_log(ImgloadContext ctx, ImgloadLogLevel level, const char* format,
 		return;
 	}
 
+	if (level < ctx->log.minLevel)
+	{
+		return;
+	}
+
 	char buffer[1024];
 	va_list args;
 	va_start(args, format);

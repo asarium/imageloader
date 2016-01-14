@@ -89,10 +89,11 @@ typedef uint32_t ImgloadErrorCode;
 
 enum
 {
-    IMGLOAD_LOG_DEBUG = 0,
-    IMGLOAD_LOG_INFO = 1,
-    IMGLOAD_LOG_WARNING = 2,
-    IMGLOAD_LOG_ERROR = 3,
+    IMGLOAD_LOG_NONE = 0,
+    IMGLOAD_LOG_DEBUG = 100,
+    IMGLOAD_LOG_INFO = 200,
+    IMGLOAD_LOG_WARNING = 300,
+    IMGLOAD_LOG_ERROR = 400,
 };
 typedef uint32_t ImgloadLogLevel;
 
@@ -142,6 +143,8 @@ ImgloadErrorCode IMGLOAD_API imgload_context_add_plugin(ImgloadContext ctx, Imgl
                                                         void* plugin_param);
 
 ImgloadErrorCode IMGLOAD_API imgload_context_set_log_callback(ImgloadContext ctx, ImgloadLogHandler handler, void* ud);
+
+ImgloadErrorCode IMGLOAD_API imgload_context_set_log_level(ImgloadContext ctx, ImgloadLogLevel level);
 
 ImgloadErrorCode IMGLOAD_API imgload_context_free(ImgloadContext ctx);
 
