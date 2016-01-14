@@ -73,5 +73,10 @@ ImgloadErrorCode image_allocate_frames(ImgloadImage img, size_t num_frames);
 
 ImgloadErrorCode image_allocate_mipmaps(ImgloadImage img, size_t subframe, size_t mipmaps);
 
+void image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
+                                            ImgloadImageData* data, bool transfer_ownership);
+
+void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
+                                            ImgloadImageData* data, bool transfer_ownership);
 
 #endif //IMAGELOADER_IMAGE_H

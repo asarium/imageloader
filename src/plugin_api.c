@@ -210,16 +210,13 @@ ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_num_mipmaps(ImgloadImage i
 }
 
 void IMGLOAD_API imgload_plugin_image_set_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
-    ImgloadImageData* data, int transfer_ownership)
+ImgloadImageData* data, int transfer_ownership)
 {
     assert(img != NULL);
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    Mipmap* mipmap1 = &img->frames[subimage].mipmaps[mipmap];
-    mipmap1->compressed.image = *data;
-    mipmap1->compressed.free_memory = !!transfer_ownership;
-    mipmap1->compressed.has_data = true;
+    image_set_compressed_data(img, subimage, mipmap, data, !!transfer_ownership);
 }
 
 void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
@@ -229,8 +226,5 @@ void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t su
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    Mipmap* mipmap1 = &img->frames[subimage].mipmaps[mipmap];
-    mipmap1->raw.image = *data;
-    mipmap1->raw.free_memory = !!transfer_ownership;
-    mipmap1->raw.has_data = true;
+    image_set_data(img, subimage, mipmap, data, !!transfer_ownership);
 }

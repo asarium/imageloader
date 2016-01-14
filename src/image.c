@@ -333,3 +333,22 @@ ImgloadErrorCode image_allocate_mipmaps(ImgloadImage img, size_t subframe, size_
 
     return IMGLOAD_ERR_NO_ERROR;
 }
+
+void image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
+                                            ImgloadImageData* data, bool transfer_ownership)
+{
+    Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
+    mipmap1->compressed.image = *data;
+    mipmap1->compressed.free_memory = transfer_ownership;
+    mipmap1->compressed.has_data = true; 
+}
+
+void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
+                                            ImgloadImageData* data, bool transfer_ownership)
+{
+    Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
+    mipmap1->raw.image = *data;
+    mipmap1->raw.free_memory = transfer_ownership;
+    mipmap1->raw.has_data = true;
+}
+
