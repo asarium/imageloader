@@ -11,21 +11,21 @@
 #include <stdio.h>
 #include <string.h>
 
-int stb_read(void* user, char* data, int size)
+static int stb_read(void* user, char* data, int size)
 {
     ImgloadImage img = (ImgloadImage)user;
     
     return (int)imgload_plugin_image_read(img, (uint8_t*)data, (size_t)size);
 }
 
-void stb_skip(void* user, int n)
+static void stb_skip(void* user, int n)
 {
     ImgloadImage img = (ImgloadImage)user;
 
     imgload_plugin_image_seek(img, (int)n, SEEK_CUR);
 }
 
-int stb_eof(void* user)
+static int stb_eof(void* user)
 {
     ImgloadImage img = (ImgloadImage)user;
 
