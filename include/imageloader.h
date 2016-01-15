@@ -52,21 +52,21 @@ extern "C"
  * @note  Compare with IMGLOAD_VERSION_MAJOR to check if the runtime version is compatible
  * @return The major version of the runtime library
  */
-uint32_t IMGLOAD_API imgload_version_major();
+uint32_t IMGLOAD_API imgload_version_major(void);
 
 /**
  * @brief Determines the minor version this library was compiled with.
  * @note  Compare with IMGLOAD_VERSION_MINOR to check if the runtime version is compatible
  * @return The minor version of the runtime library
  */
-uint32_t IMGLOAD_API imgload_version_minor();
+uint32_t IMGLOAD_API imgload_version_minor(void);
 
 /**
  * @brief Determines the patch version this library was compiled with.
  * @note  Compare with IMGLOAD_VERSION_PATCH to check if the runtime version is compatible
  * @return The patch version of the runtime library
  */
-uint32_t IMGLOAD_API imgload_version_patch();
+uint32_t IMGLOAD_API imgload_version_patch(void);
 
 
 /**
@@ -203,8 +203,9 @@ typedef uint32_t ImgloadPropertyType;
 enum
 {
     IMGLOAD_FORMAT_R8G8B8A8 = 0,
-    IMGLOAD_FORMAT_R8G8B8 = 1,
-    IMGLOAD_FORMAT_GRAY8 = 2,
+    IMGLOAD_FORMAT_B8G8R8A8 = 1,
+    IMGLOAD_FORMAT_R8G8B8 = 2,
+    IMGLOAD_FORMAT_GRAY8 = 3,
 };
 typedef uint32_t ImgloadFormat;
 
