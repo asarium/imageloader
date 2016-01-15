@@ -80,8 +80,6 @@ static void write32Bit(FILE* outf, ImgloadImageData* data)
 
 static void writeTGA(const char* name, ImgloadFormat format, ImgloadImageData* data)
 {
-    Color8888_t* pixel_data = (Color8888_t*) data;
-
     FILE* outf = fopen(name, "wb");
 
     if (outf == NULL)
