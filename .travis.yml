@@ -6,6 +6,7 @@ addons:
         packages:
             - ninja-build
             - libpng-dev
+            - valgrind
 matrix:
     include:
         - os: linux
