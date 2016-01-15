@@ -70,6 +70,7 @@ ImgloadErrorCode IMGLOAD_API imgload_context_init(ImgloadContext* ctx_ptr, Imglo
     {
         if (!register_default_plugins(ctx))
         {
+            imgload_context_free(ctx);
             return IMGLOAD_ERR_PLUGIN_ERROR;
         }
     }
