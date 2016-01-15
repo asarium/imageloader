@@ -70,3 +70,34 @@ TEST_F(DDSTests, read_data)
 
     std::fclose(file_ptr);
 }
+
+TEST_F(DDSTests, read_data_flip)
+{
+    this->makeContext(IMGLOAD_CONTEXT_FLIP_IMAGES);
+
+    ImgloadImage img;
+    auto io = util::get_std_io();
+
+    auto file_ptr = std::fopen(TEST_DATA_PATH "ddsimg/Col_Viper_Mk7e_Th11.dds", "rb");
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_init(this->ctx, &img, &io, static_cast<void*>(file_ptr)));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_read_data(img));
+
+    auto subimages = imgload_image_num_subimages(img);
+    for (size_t i = 0; i < subimages; ++i)
+    {
+        auto mipmaps = imgload_image_num_mipmaps(img, i);
+        for (size_t j = 0; j < mipmaps; ++j)
+        {
+            ImgloadImageData data;
+            ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_compressed_data(img, i, j, &data));
+
+            ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_data(img, i, j, &data));
+        }
+    }
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
+}

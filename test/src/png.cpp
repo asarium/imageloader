@@ -61,3 +61,26 @@ TEST_F(PNGTests, read_data)
 
     std::fclose(file_ptr);
 }
+
+TEST_F(PNGTests, read_data_flip)
+{
+    this->makeContext(IMGLOAD_CONTEXT_FLIP_IMAGES);
+
+    ImgloadImage img;
+    auto io = util::get_std_io();
+
+    auto file_ptr = std::fopen(TEST_DATA_PATH "png/test1.png", "rb");
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_init(this->ctx, &img, &io, static_cast<void*>(file_ptr)));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_read_data(img));
+
+    ImgloadImageData data;
+    ASSERT_EQ(IMGLOAD_ERR_NO_DATA, imgload_image_compressed_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
+}

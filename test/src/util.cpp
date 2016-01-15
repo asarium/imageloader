@@ -51,21 +51,15 @@ namespace
 
 namespace util
 {
+
+    ContextFixture::ContextFixture() : ctx(nullptr)
+    {
+
+    }
+
     void ContextFixture::SetUp()
     {
-        ImgloadMemoryAllocator allocator;
-        allocator.realloc = mem_realloc;
-        allocator.free = mem_free;
-
-        auto err = imgload_context_init(&ctx, 0, &allocator, nullptr);
-
-        if (err != IMGLOAD_ERR_NO_ERROR)
-        {
-            ctx = nullptr;
-            FAIL() << "Failed to allocate imgload context!";
-        }
-
-        imgload_context_set_log_callback(ctx, logger, nullptr);
+        makeContext(0);
     }
 
     void ContextFixture::TearDown()
@@ -84,5 +78,28 @@ namespace util
         io.seek = std_seek;
 
         return io;
+    }
+
+    void ContextFixture::makeContext(ImgloadContextFlags flags)
+    {
+        if (ctx != nullptr)
+        {
+            imgload_context_free(ctx);
+            ctx = nullptr;
+        }
+
+        ImgloadMemoryAllocator allocator;
+        allocator.realloc = mem_realloc;
+        allocator.free = mem_free;
+
+        auto err = imgload_context_init(&ctx, flags, &allocator, nullptr);
+
+        if (err != IMGLOAD_ERR_NO_ERROR)
+        {
+            ctx = nullptr;
+            FAIL() << "Failed to allocate imgload context!";
+        }
+
+        imgload_context_set_log_callback(ctx, logger, nullptr);
     }
 }
