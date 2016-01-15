@@ -7,7 +7,6 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
-#include <imageloader.h>
 
 static bool validate_image(ImgloadImage img)
 {
@@ -225,7 +224,7 @@ ImgloadErrorCode IMGLOAD_API imgload_image_data(ImgloadImage img, size_t subimag
 static void free_mipmap_data(ImgloadContext ctx, MipmapData* data)
 {
     // Make sure that memory is allocated and we actually need to free the memory
-    if (data->free_memory && data->image.data != NULL)
+    if (data->image.data != NULL)
     {
         mem_free(ctx, data->image.data);
     }
@@ -340,8 +339,22 @@ void image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
 {
     Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
     mipmap1->compressed.image = *data;
-    mipmap1->compressed.free_memory = transfer_ownership;
-    mipmap1->compressed.has_data = true; 
+
+    if (!transfer_ownership)
+    {
+        // Memory wasn't allocated by us so we need to copy it.
+        mipmap1->compressed.image.data = mem_realloc(img->context, NULL, data->data_size);
+
+        if (mipmap1->compressed.image.data == NULL)
+        {
+            print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate memory for copying image data from plugin!");
+            return;
+        }
+
+        memcpy(mipmap1->compressed.image.data, data->data, data->data_size);
+    }
+
+    mipmap1->compressed.has_data = true;
 }
 
 void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
@@ -349,7 +362,20 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
 {
     Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
     mipmap1->raw.image = *data;
-    mipmap1->raw.free_memory = transfer_ownership;
+
+    if (!transfer_ownership)
+    {
+        // Memory wasn't allocated by us so we need to copy it.
+        mipmap1->raw.image.data = mem_realloc(img->context, NULL, data->data_size);
+
+        if (mipmap1->raw.image.data == NULL)
+        {
+            print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate memory for copying image data from plugin!");
+            return;
+        }
+
+        memcpy(mipmap1->raw.image.data, data->data, data->data_size);
+    }
     mipmap1->raw.has_data = true;
 
     if (img->context->flags & IMGLOAD_CONTEXT_FLIP_IMAGES)

@@ -216,7 +216,7 @@ ImgloadImageData* data, int transfer_ownership)
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    image_set_compressed_data(img, subimage, mipmap, data, !!transfer_ownership);
+    image_set_compressed_data(img, subimage, mipmap, data, transfer_ownership != 0);
 }
 
 void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
@@ -226,5 +226,5 @@ void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t su
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    image_set_data(img, subimage, mipmap, data, !!transfer_ownership);
+    image_set_data(img, subimage, mipmap, data, transfer_ownership != 0);
 }

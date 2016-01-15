@@ -24,7 +24,6 @@ typedef struct
 typedef struct
 {
     ImgloadImageData image;
-    bool free_memory;
     bool has_data;
 } MipmapData;
 
