@@ -232,7 +232,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK plugin_read_data(ImgloadPlugin plugin, 
                 new_data.height = (size_t)data.height;
                 new_data.depth = (size_t)data.depth;
 
-                new_data.stride = new_data.width * 4; // Format is always 32 bit RGBA
+                new_data.stride = 0; // stride isn't useful for compressed formats
                 new_data.data_size = data.data_size;
                 new_data.data = data.data;
 
@@ -262,6 +262,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK plugin_decompress_data(ImgloadPlugin pl
     image_data.height = (size_t)data.height;
     image_data.depth = (size_t)data.depth;
 
+    image_data.stride = data.width * 4; // Format is always 32 bit RGBA
     image_data.data_size = data.data_size;
     image_data.data = data.data;
 
