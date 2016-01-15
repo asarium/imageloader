@@ -1,6 +1,7 @@
 
 #include <imageloader.h>
 
+#include "log.h"
 #include "context.h"
 
 #include <stdio.h>
