@@ -3,6 +3,7 @@
 #include "plugin.h"
 #include "context.h"
 #include "log.h"
+#include "format.h"
 
 #include <string.h>
 #include <assert.h>
@@ -126,8 +127,9 @@ ImgloadErrorCode IMGLOAD_API imgload_image_get_property(ImgloadImage img, size_t
 ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img)
 {
     assert(img != NULL);
-    assert(img->data_format_initialized);
 
+    // If a data format was requested use that
+    assert(img->data_format_initialized);
     return img->data_format;
 }
 
@@ -137,6 +139,23 @@ ImgloadCompression IMGLOAD_API imgload_image_compression(ImgloadImage img)
     assert(img->compression_initialized);
 
     return img->compression;
+}
+
+ImgloadErrorCode IMGLOAD_API imgload_image_transform_data(ImgloadImage img, ImgloadFormat requested, uint64_t param)
+{
+    assert(img != NULL);
+
+    if (img->conv.do_convert)
+    {
+        // Already have a format
+        return IMGLOAD_ERR_FORMAT_ERROR;
+    }
+
+    img->conv.do_convert = true;
+    img->conv.requested = requested;
+    img->conv.param = param;
+
+    return IMGLOAD_ERR_NO_ERROR;
 }
 
 ImgloadErrorCode IMGLOAD_API imgload_image_read_data(ImgloadImage img)
@@ -408,6 +427,17 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
         }
 
         mem_free(img->context, buffer);
+    }
+
+    if (img->conv.do_convert)
+    {
+        ImgloadImageData converted_data;
+        ImgloadErrorCode err = format_change(img, img->plugin_data_format, &mipmap1->raw.image, &converted_data);
+
+        if (err != IMGLOAD_ERR_NO_ERROR)
+        {
+
+        }
     }
 }
 

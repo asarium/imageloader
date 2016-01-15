@@ -56,6 +56,13 @@ struct ImgloadImageImpl
 
     struct
     {
+        bool do_convert;
+        ImgloadFormat requested;
+        int64_t param;
+    } conv;
+
+    struct
+    {
         ImgloadIO funcs;
         void* ud;
     } io;

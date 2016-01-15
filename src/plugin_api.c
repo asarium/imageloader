@@ -152,6 +152,7 @@ void IMGLOAD_API imgload_plugin_image_set_data_type(ImgloadImage img, ImgloadFor
 {
     assert(img != NULL);
 
+    img->plugin_data_format = format;
     img->data_format = format;
     img->data_format_initialized = true;
 

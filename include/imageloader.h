@@ -84,6 +84,7 @@ enum
     IMGLOAD_ERR_NO_DATA = 7,
     IMGLOAD_ERR_WRONG_TYPE = 8,
     IMGLOAD_ERR_FILE_INVALID = 9,
+    IMGLOAD_ERR_FORMAT_ERROR = 10,
 };
 typedef uint32_t ImgloadErrorCode;
 
@@ -232,6 +233,8 @@ ImgloadErrorCode IMGLOAD_API imgload_image_get_property(ImgloadImage img, size_t
 ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img);
 
 ImgloadCompression IMGLOAD_API imgload_image_compression(ImgloadImage img);
+
+ImgloadErrorCode IMGLOAD_API imgload_image_transform_data(ImgloadImage img, ImgloadFormat requested, uint64_t param);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_read_data(ImgloadImage img);
 
