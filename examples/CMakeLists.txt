@@ -1,5 +1,5 @@
 
-add_executable(dump_mipmaps dump_mipmaps.c)
+add_executable(dump_mipmaps dump_mipmaps.c stb_image_write.h)
 target_link_libraries(dump_mipmaps PRIVATE imageloader)
 
 set_target_properties(dump_mipmaps PROPERTIES FOLDER "imageloader Examples")

@@ -4,6 +4,9 @@
 
 #include <imageloader.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 typedef struct
 {
     uint8_t r;
@@ -38,92 +41,6 @@ static void* IMGLOAD_CALLBACK mem_realloc(void* ud, void* mem, size_t size)
 static void IMGLOAD_CALLBACK mem_free(void* ud, void* mem)
 {
     free(mem);
-}
-
-static void write24Bit(FILE* outf, ImgloadImageData* data)
-{
-    uint8_t* pixel_data = (uint8_t*)data->data;
-    size_t x, y;
-    for (y = 0; y < data->height; ++y)
-    {
-        for (x = 0; x < data->width; ++x)
-        {
-            size_t offset = y * data->stride + x * 3;
-            Color888_t c = *(Color888_t*)(pixel_data + offset);
-
-            putc(c.b, outf);
-            putc(c.g, outf);
-            putc(c.r, outf);
-        }
-    }
-    
-}
-
-static void write32Bit(FILE* outf, ImgloadImageData* data)
-{
-    uint8_t* pixel_data = (uint8_t*)data->data;
-    size_t x, y;
-    for (y = 0; y < data->height; ++y)
-    {
-        for (x = 0; x < data->width; ++x)
-        {
-            size_t offset = y * data->stride + x * 4;
-            Color8888_t c = *(Color8888_t*)(pixel_data + offset);
-
-            putc(c.b, outf);
-            putc(c.g, outf);
-            putc(c.r, outf);
-            putc(c.a, outf);
-        }
-    }
-}
-
-static void writeTGA(const char* name, ImgloadFormat format, ImgloadImageData* data)
-{
-    FILE* outf = fopen(name, "wb");
-
-    if (outf == NULL)
-    {
-        printf("Failed to open file %s!\n", name);
-        return;
-    }
-
-    putc(0, outf);
-    putc(0, outf);
-    putc(2, outf);                         /* uncompressed RGB */
-    putc(0, outf);
-    putc(0, outf);
-    putc(0, outf);
-    putc(0, outf);
-    putc(0, outf);
-    putc(0, outf);
-    putc(0, outf);           /* X origin */
-    putc(0, outf);
-    putc(0, outf);           /* y origin */
-    putc((uint32_t)(data->width & 0x00FF), outf);
-    putc((uint32_t)(data->width & 0xFF00) / 256, outf);
-    putc((uint32_t)(data->height & 0x00FF), outf);
-    putc((uint32_t)(data->height & 0xFF00) / 256, outf);
-    if (format == IMGLOAD_FORMAT_R8G8B8)
-    {
-        putc(24, outf);                        /* 24 bit bitmap */
-    }
-    else
-    {
-        putc(32, outf);                        /* 32 bit bitmap */
-    }
-    putc(32, outf);                     // Origin is top left
-
-    if (format == IMGLOAD_FORMAT_R8G8B8)
-    {
-        write24Bit(outf, data);
-    }
-    else
-    {
-        write32Bit(outf, data);
-    }
-
-    fclose(outf);
 }
 
 int main(int argc, char** argv)
@@ -168,10 +85,10 @@ int main(int argc, char** argv)
 
     ImgloadFormat format = imgload_image_data_format(img);
 
-    if (format != IMGLOAD_FORMAT_R8G8B8 && format != IMGLOAD_FORMAT_R8G8B8A8)
+    if (format == IMGLOAD_FORMAT_B8G8R8A8)
     {
-        printf("Only RGB and RGBA images are currently supported!");
-        return EXIT_FAILURE;
+        imgload_image_transform_data(img, IMGLOAD_FORMAT_R8G8B8A8, 0);
+        format = imgload_image_data_format(img);
     }
 
     size_t subimages = imgload_image_num_subimages(img);
@@ -217,12 +134,36 @@ int main(int argc, char** argv)
             }
             if (err == IMGLOAD_ERR_NO_ERROR)
             {
-                snprintf(filename, sizeof(filename), "image-%u-%u.tga", i, j);
-                writeTGA(filename, format, &data);
+                snprintf(filename, sizeof(filename), "image-%u-%u.png", i, j);
+                int comp;
+                switch(format)
+                {
+                    case IMGLOAD_FORMAT_R8G8B8A8:
+                        comp = 4;
+                        break;
+                    case IMGLOAD_FORMAT_R8G8B8:
+                        comp = 3;
+                        break;
+                    case IMGLOAD_FORMAT_GRAY8:
+                        comp = 1;
+                        break;
+                    default:
+                        printf("Unknown data format for subimage %u, mipmap %u!\n", i, j);
+                        comp = 0;
+                        break;
+                }
+
+                if (comp != 0)
+                {
+                    if (stbi_write_png(filename, (int) data.width, (int) data.height, comp, data.data, (int) data.stride) == 0)
+                    {
+                        printf("Failed to write image %s!\n", filename);
+                    }
+                }
             }
             else
             {
-                printf("Failed to decompress subimage %u, mipmap %u!\n", i, j);
+                printf("Failed to get data for subimage %u, mipmap %u!\n", i, j);
             }
         }
     }
