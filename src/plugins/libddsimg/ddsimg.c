@@ -236,7 +236,12 @@ static ImgloadErrorCode IMGLOAD_CALLBACK plugin_read_data(ImgloadPlugin plugin, 
                 new_data.data_size = data.data_size;
                 new_data.data = data.data;
 
-                imgload_plugin_image_set_compressed_data(img, (size_t)i, (size_t)j, &new_data, 0);
+                ImgloadErrorCode set_err = imgload_plugin_image_set_compressed_data(img, (size_t)i, (size_t)j, &new_data, 0);
+
+                if (set_err != IMGLOAD_ERR_NO_ERROR)
+                {
+                    return set_err;
+                }
             }
         }
     }
@@ -266,9 +271,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK plugin_decompress_data(ImgloadPlugin pl
     image_data.data_size = data.data_size;
     image_data.data = data.data;
 
-    imgload_plugin_image_set_image_data(img, subimage, mipmap, &image_data, 0);
-
-    return IMGLOAD_ERR_NO_ERROR;
+    return imgload_plugin_image_set_image_data(img, subimage, mipmap, &image_data, 0);
 }
 
 static ImgloadErrorCode IMGLOAD_CALLBACK plugin_deinit_image(ImgloadPlugin plugin, ImgloadImage img)

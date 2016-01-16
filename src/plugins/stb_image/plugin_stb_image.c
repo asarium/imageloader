@@ -165,9 +165,7 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     data.data_size = total_size;
     data.data = buffer;
 
-    imgload_plugin_image_set_image_data(img, 0, 0, &data, 1);
-
-    return IMGLOAD_ERR_NO_ERROR;
+    return imgload_plugin_image_set_image_data(img, 0, 0, &data, 1);
 }
 
 ImgloadErrorCode IMGLOAD_CALLBACK stb_image_plugin_loader(ImgloadPlugin plugin, void* parameter)

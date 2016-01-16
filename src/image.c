@@ -128,8 +128,8 @@ ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img)
 {
     assert(img != NULL);
 
-    // If a data format was requested use that
     assert(img->data_format_initialized);
+
     return img->data_format;
 }
 
@@ -145,15 +145,34 @@ ImgloadErrorCode IMGLOAD_API imgload_image_transform_data(ImgloadImage img, Imgl
 {
     assert(img != NULL);
 
-    if (img->conv.do_convert)
-    {
-        // Already have a format
-        return IMGLOAD_ERR_FORMAT_ERROR;
-    }
-
     img->conv.do_convert = true;
     img->conv.requested = requested;
     img->conv.param = param;
+
+    // Transform all currently loaded data
+    for (size_t i = 0; i < img->n_frames; ++i)
+    {
+        for (size_t j = 0; j < img->frames[i].n_mipmaps; ++j)
+        {
+            Mipmap* mipmap = &img->frames[i].mipmaps[j];
+
+            if (mipmap->raw.has_data)
+            {
+                ImgloadImageData new_data;
+                ImgloadErrorCode err = format_change(img, img->data_format, &mipmap->raw.image, &new_data);
+
+                mipmap->raw.image = new_data;
+
+                if (err != IMGLOAD_ERR_NO_ERROR)
+                {
+                    // The image format is in an inconsistent state now and should not be used anymore
+                    return err;
+                }
+            }
+        }
+    }
+
+    img->data_format = requested;
 
     return IMGLOAD_ERR_NO_ERROR;
 }
@@ -353,7 +372,7 @@ ImgloadErrorCode image_allocate_mipmaps(ImgloadImage img, size_t subframe, size_
     return IMGLOAD_ERR_NO_ERROR;
 }
 
-void image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
+ImgloadErrorCode image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
                                             ImgloadImageData* data, bool transfer_ownership)
 {
     Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
@@ -366,17 +385,18 @@ void image_set_compressed_data(ImgloadImage img, size_t subframe, size_t mipmap,
 
         if (mipmap1->compressed.image.data == NULL)
         {
-            print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate memory for copying image data from plugin!");
-            return;
+            return IMGLOAD_ERR_OUT_OF_MEMORY;
         }
 
         memcpy(mipmap1->compressed.image.data, data->data, data->data_size);
     }
 
     mipmap1->compressed.has_data = true;
+
+    return IMGLOAD_ERR_NO_ERROR;
 }
 
-void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
+ImgloadErrorCode image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
                                             ImgloadImageData* data, bool transfer_ownership)
 {
     Mipmap* mipmap1 = &img->frames[subframe].mipmaps[mipmap];
@@ -389,8 +409,7 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
 
         if (mipmap1->raw.image.data == NULL)
         {
-            print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate memory for copying image data from plugin!");
-            return;
+            return IMGLOAD_ERR_OUT_OF_MEMORY;
         }
 
         memcpy(mipmap1->raw.image.data, data->data, data->data_size);
@@ -405,7 +424,7 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
         if (buffer == NULL)
         {
             print_to_log(img->context, IMGLOAD_LOG_ERROR, "Failed to allocate buffer for flipping image!");
-            return;
+            return IMGLOAD_ERR_OUT_OF_MEMORY;
         }
 
         for (size_t d = 0; d < data->depth; ++d)
@@ -436,8 +455,10 @@ void image_set_data(ImgloadImage img, size_t subframe, size_t mipmap,
 
         if (err != IMGLOAD_ERR_NO_ERROR)
         {
-
+            return err;
         }
     }
+
+    return IMGLOAD_ERR_NO_ERROR;
 }
 

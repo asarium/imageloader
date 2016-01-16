@@ -56,10 +56,10 @@ ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_property(ImgloadImage img,
 
 ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_num_mipmaps(ImgloadImage img, size_t subimage, size_t mipmaps);
 
-void IMGLOAD_API imgload_plugin_image_set_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
+ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
     ImgloadImageData* data, int transfer_ownership);
 
-void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
+ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
     ImgloadImageData* data, int transfer_ownership);
 
 #ifdef __cplusplus

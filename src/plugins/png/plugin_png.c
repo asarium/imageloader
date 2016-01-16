@@ -261,12 +261,12 @@ static ImgloadErrorCode IMGLOAD_CALLBACK png_read_data(ImgloadPlugin plugin, Img
     img_data.data = data;
 
     // The memory was allocated using the imageloader allocator so we can transfer ownership
-    imgload_plugin_image_set_image_data(img, 0, 0, &img_data, 1);
+    ImgloadErrorCode err = imgload_plugin_image_set_image_data(img, 0, 0, &img_data, 1);
 
     // The row pointers aren't needed anymore
     imgload_plugin_free(plugin, rowPtrs);
 
-    return IMGLOAD_ERR_NO_ERROR;
+    return err;
 }
 
 static ImgloadErrorCode IMGLOAD_CALLBACK png_deinit_image(ImgloadPlugin plugin, ImgloadImage img)

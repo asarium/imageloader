@@ -84,3 +84,59 @@ TEST_F(PNGTests, read_data_flip)
 
     std::fclose(file_ptr);
 }
+
+TEST_F(PNGTests, transform_data_before_read)
+{
+    ImgloadImage img;
+    auto io = util::get_std_io();
+
+    auto file_ptr = std::fopen(TEST_DATA_PATH "png/test1.png", "rb");
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_init(this->ctx, &img, &io, static_cast<void*>(file_ptr)));
+
+    ASSERT_EQ(IMGLOAD_FORMAT_R8G8B8A8, imgload_image_data_format(img));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_transform_data(img, IMGLOAD_FORMAT_B8G8R8A8, 0));
+
+    ASSERT_EQ(IMGLOAD_FORMAT_B8G8R8A8, imgload_image_data_format(img));
+
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_read_data(img));
+
+    ImgloadImageData data;
+    ASSERT_EQ(IMGLOAD_ERR_NO_DATA, imgload_image_compressed_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
+}
+
+TEST_F(PNGTests, transform_data_after_read)
+{
+    ImgloadImage img;
+    auto io = util::get_std_io();
+
+    auto file_ptr = std::fopen(TEST_DATA_PATH "png/test1.png", "rb");
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_init(this->ctx, &img, &io, static_cast<void*>(file_ptr)));
+
+    ASSERT_EQ(IMGLOAD_FORMAT_R8G8B8A8, imgload_image_data_format(img));
+
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_read_data(img));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_transform_data(img, IMGLOAD_FORMAT_B8G8R8A8, 0));
+
+    ASSERT_EQ(IMGLOAD_FORMAT_B8G8R8A8, imgload_image_data_format(img));
+
+    ImgloadImageData data;
+    ASSERT_EQ(IMGLOAD_ERR_NO_DATA, imgload_image_compressed_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_data(img, 0, 0, &data));
+
+    ASSERT_EQ(IMGLOAD_ERR_NO_ERROR, imgload_image_free(img));
+
+    std::fclose(file_ptr);
+}

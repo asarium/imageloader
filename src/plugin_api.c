@@ -210,22 +210,22 @@ ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_num_mipmaps(ImgloadImage i
     return image_allocate_mipmaps(img, subimage, mipmaps);
 }
 
-void IMGLOAD_API imgload_plugin_image_set_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
+ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_compressed_data(ImgloadImage img, size_t subimage, size_t mipmap,
 ImgloadImageData* data, int transfer_ownership)
 {
     assert(img != NULL);
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    image_set_compressed_data(img, subimage, mipmap, data, transfer_ownership != 0);
+    return image_set_compressed_data(img, subimage, mipmap, data, transfer_ownership != 0);
 }
 
-void IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
+ImgloadErrorCode IMGLOAD_API imgload_plugin_image_set_image_data(ImgloadImage img, size_t subimage, size_t mipmap,
     ImgloadImageData* data, int transfer_ownership)
 {
     assert(img != NULL);
     assert(subimage < img->n_frames);
     assert(mipmap < img->frames[subimage].n_mipmaps);
 
-    image_set_data(img, subimage, mipmap, data, transfer_ownership != 0);
+    return image_set_data(img, subimage, mipmap, data, transfer_ownership != 0);
 }
