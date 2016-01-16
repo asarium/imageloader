@@ -6,5 +6,6 @@
 #cmakedefine01 WITH_LIBDDSIMG
 #cmakedefine01 WITH_PNG
 #cmakedefine01 WITH_STB_IMAGE
+#cmakedefine01 WITH_PCX
 
 #endif // PROJECT_H

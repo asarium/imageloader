@@ -10,3 +10,7 @@ endif()
 if (WITH_STB_IMAGE)
 	add_subdirectory(stb_image)
 endif()
+
+if (WITH_PCX)
+	add_subdirectory(pcximg)
+endif()
