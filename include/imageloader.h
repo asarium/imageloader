@@ -12,7 +12,7 @@ extern "C"
 
 // Standard calling convention
 #ifdef WIN32
-#define IMGLOAD_CC __stdcall
+#define IMGLOAD_CC __cdecl
 #else
 #define IMGLOAD_CC
 #endif
