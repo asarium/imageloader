@@ -7,20 +7,24 @@
 
 #include <assert.h>
 
-typedef PACK(struct
-                     {
-                         uint8_t r;
-                         uint8_t g;
-                         uint8_t b;
-                         uint8_t a;
-                     }) color_rgba;
+PACK(struct color_rgba
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+});
 
-typedef PACK(struct
-                     {
-                         uint8_t r;
-                         uint8_t g;
-                         uint8_t b;
-                     }) color_rgb;
+typedef struct color_rgba color_rgba_t;
+
+PACK(struct color_rgb
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+});
+
+typedef struct color_rgb color_rgb_t;
 
 size_t format_bpp(ImgloadFormat format)
 {
@@ -52,13 +56,13 @@ static void convert_rgba_bgra(ImgloadImageData* img_data)
         {
             uint8_t* line_begin = data_begin + d * slice_size + y * img_data->stride;
 
-            color_rgba* colors = (color_rgba*) line_begin;
+            color_rgba_t* colors = (color_rgba_t*) line_begin;
 
             for (size_t x = 0; x < img_data->width; ++x)
             {
-                color_rgba c = colors[x];
+                color_rgba_t c = colors[x];
 
-                color_rgba* dest_color = colors + x;
+                color_rgba_t* dest_color = colors + x;
 
                 // Switch r and b, the rest stays the same
                 dest_color->r = c.b;
@@ -103,8 +107,8 @@ static void convert_generic(ImgloadImage img, ImgloadImageData* input, ImgloadFo
 
 static void rgb_to_rgba(ImgloadImage img, void* input_ptr, void* output_ptr)
 {
-    color_rgb* input_color = (color_rgb*) input_ptr;
-    color_rgba* output_color = (color_rgba*) output_ptr;
+    color_rgb_t* input_color = (color_rgb_t*) input_ptr;
+    color_rgba_t* output_color = (color_rgba_t*) output_ptr;
 
     output_color->r = input_color->r;
     output_color->g = input_color->g;
@@ -114,8 +118,8 @@ static void rgb_to_rgba(ImgloadImage img, void* input_ptr, void* output_ptr)
 
 static void rgba_to_rgb(ImgloadImage img, void* input_ptr, void* output_ptr)
 {
-    color_rgba* input_color = (color_rgba*) input_ptr;
-    color_rgb* output_color = (color_rgb*) output_ptr;
+    color_rgba_t* input_color = (color_rgba_t*) input_ptr;
+    color_rgb_t* output_color = (color_rgb_t*) output_ptr;
 
     output_color->r = input_color->r;
     output_color->g = input_color->g;
@@ -124,9 +128,9 @@ static void rgba_to_rgb(ImgloadImage img, void* input_ptr, void* output_ptr)
 
 static void rgb_to_luminance(ImgloadImage img, void* input_ptr, void* output_ptr)
 {
-    float r_factor = 0.2126;
-    float g_factor = 0.7152;
-    float b_factor = 0.0722;
+    float r_factor = 0.2126f;
+    float g_factor = 0.7152f;
+    float b_factor = 0.0722f;
 
     if (img->conv.param != 0)
     {
@@ -143,7 +147,7 @@ static void rgb_to_luminance(ImgloadImage img, void* input_ptr, void* output_ptr
         b_factor = (float)b_ratio / sum;
     }
 
-    color_rgb* input_color = (color_rgb*) input_ptr;
+    color_rgb_t* input_color = (color_rgb_t*) input_ptr;
     uint8_t* output_color = (uint8_t*) output_ptr;
 
     *output_color = (uint8_t) (input_color->r * r_factor + input_color->g * g_factor + input_color->b * b_factor);
@@ -152,7 +156,7 @@ static void rgb_to_luminance(ImgloadImage img, void* input_ptr, void* output_ptr
 static void luminance_to_rgba(ImgloadImage img, void* input_ptr, void* output_ptr)
 {
     uint8_t* input_color = (uint8_t*) input_ptr;
-    color_rgba* output_color = (color_rgba*) output_ptr;
+    color_rgba_t* output_color = (color_rgba_t*) output_ptr;
 
     output_color->r = *input_color;
     output_color->g = *input_color;
@@ -163,7 +167,7 @@ static void luminance_to_rgba(ImgloadImage img, void* input_ptr, void* output_pt
 static void luminance_to_rgb(ImgloadImage img, void* input_ptr, void* output_ptr)
 {
     uint8_t* input_color = (uint8_t*) input_ptr;
-    color_rgb* output_color = (color_rgb*) output_ptr;
+    color_rgb_t* output_color = (color_rgb_t*) output_ptr;
 
     output_color->r = *input_color;
     output_color->g = *input_color;
