@@ -234,6 +234,9 @@ ImgloadFormat IMGLOAD_API imgload_image_data_format(ImgloadImage img);
 
 ImgloadCompression IMGLOAD_API imgload_image_compression(ImgloadImage img);
 
+uint64_t IMGLOAD_API imgload_transform_alpha(uint8_t alpha);
+uint64_t IMGLOAD_API imgload_transform_rgb(uint8_t r, uint8_t g, uint8_t b);
+
 ImgloadErrorCode IMGLOAD_API imgload_image_transform_data(ImgloadImage img, ImgloadFormat requested, uint64_t param);
 
 ImgloadErrorCode IMGLOAD_API imgload_image_read_data(ImgloadImage img);

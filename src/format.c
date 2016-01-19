@@ -135,10 +135,10 @@ static void rgb_to_luminance(ImgloadImage img, void* input_ptr, void* output_ptr
     if (img->conv.param != 0)
     {
         uint64_t param = img->conv.param;
-        // Use the lowest 3 bytes to determine the factors
-        uint64_t r_ratio = (param & 0xFF0000) >> 16;
-        uint64_t g_ratio = (param & 0x00FF00) >> 8;
-        uint64_t b_ratio = (param & 0x0000FF);
+        // See imgload_transform_rgb, use bytes 4, 3, and 2 for r, g, and b
+        uint64_t r_ratio = (param & 0xFF000000) >> 24;
+        uint64_t g_ratio = (param & 0x00FF0000) >> 16;
+        uint64_t b_ratio = (param & 0x0000FF00) >> 8;
 
         uint64_t sum = r_ratio + g_ratio + b_ratio;
 
@@ -311,4 +311,14 @@ ImgloadErrorCode format_change(ImgloadImage img, ImgloadFormat current, ImgloadI
     }
 
     return err;
+}
+
+uint64_t IMGLOAD_API imgload_transform_alpha(uint8_t alpha)
+{
+    return alpha;
+}
+
+uint64_t IMGLOAD_API imgload_transform_rgb(uint8_t r, uint8_t g, uint8_t b)
+{
+    return ((uint64_t)r << 24 | (uint64_t)g << 16 | (uint64_t)b << 8);
 }
