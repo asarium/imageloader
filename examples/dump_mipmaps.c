@@ -7,21 +7,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-typedef struct
-{
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-} Color8888_t;
-
-typedef struct
-{
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} Color888_t;
-
 static size_t IMGLOAD_CALLBACK file_read(void* ud, uint8_t* buf, size_t buf_len)
 {
     return fread(buf, 1, buf_len, (FILE*) ud);
