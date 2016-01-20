@@ -9,33 +9,33 @@
 #include <string.h>
 #include <assert.h>
 
-#if WITH_LIBDDSIMG
+#if IMGLOADER_WITH_LIBDDSIMG
 #include "ddsimg.h"
 #endif
-#if WITH_PNG
+#if IMGLOADER_WITH_PNG
 #include "plugin_png.h"
 #endif
-#if WITH_STB_IMAGE
+#if IMGLOADER_WITH_STB_IMAGE
 #include "plugin_stb_image.h"
 #endif
 
 static int register_default_plugins(ImgloadContext ctx)
 {
-#if WITH_LIBDDSIMG
+#if IMGLOADER_WITH_LIBDDSIMG
     if (imgload_context_add_plugin(ctx, ddsimg_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default libddsimg plugin!\n");
         return 0;
     }
 #endif
-#if WITH_PNG
+#if IMGLOADER_WITH_PNG
     if (imgload_context_add_plugin(ctx, png_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default png plugin!\n");
         return 0;
     }
 #endif
-#if WITH_STB_IMAGE
+#if IMGLOADER_WITH_STB_IMAGE
     if (imgload_context_add_plugin(ctx, stb_image_plugin_loader, NULL) != IMGLOAD_ERR_NO_ERROR)
     {
         print_to_log(ctx, IMGLOAD_LOG_ERROR, "Failed to initialize default stb_image plugin!\n");

@@ -3,8 +3,8 @@
 #define PROJECT_H
 #pragma once
 
-#cmakedefine01 WITH_LIBDDSIMG
-#cmakedefine01 WITH_PNG
-#cmakedefine01 WITH_STB_IMAGE
+#cmakedefine01 IMGLOADER_WITH_LIBDDSIMG
+#cmakedefine01 IMGLOADER_WITH_PNG
+#cmakedefine01 IMGLOADER_WITH_STB_IMAGE
 
 #endif // PROJECT_H

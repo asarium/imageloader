@@ -1,12 +1,12 @@
 
-if (WITH_LIBDDSIMG)
+if (IMGLOADER_WITH_LIBDDSIMG)
 	add_subdirectory(libddsimg)
 endif()
 
-if (WITH_PNG)
+if (IMGLOADER_WITH_PNG)
 	add_subdirectory(png)
 endif()
 
-if (WITH_STB_IMAGE)
+if (IMGLOADER_WITH_STB_IMAGE)
 	add_subdirectory(stb_image)
 endif()
