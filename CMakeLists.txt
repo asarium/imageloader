@@ -8,20 +8,28 @@ endif ()
 
 project(imageloader)
 
-if(TOPLEVEL_PROJECT)
-	option(IMGLOADER_WITH_LIBDDSIMG "Build with DDS support by using libddsimg" TRUE)
+macro(library_option NAME DESCRIPTION DEFAULT_VAL)
+	if (TOPLEVEL_PROJECT)
+		option(${NAME} "${DESCRIPTION}" ${DEFAULT_VAL})
+	else()
+		if (NOT DEFINED ${NAME})
+			set(${NAME} ${DEFAULT_VAL})
+		endif()
+	endif()
+endmacro(library_option)
 
-	option(IMGLOADER_WITH_PNG "Build with PNG support by using libpng" TRUE)
+library_option(IMGLOADER_WITH_LIBDDSIMG "Build with DDS support by using libddsimg" TRUE)
 
-	option(IMGLOADER_WITH_STB_IMAGE "Build a plugin for loading images using stb_image" TRUE)
+library_option(IMGLOADER_WITH_PNG "Build with PNG support by using libpng" TRUE)
+
+library_option(IMGLOADER_WITH_STB_IMAGE "Build a plugin for loading images using stb_image" TRUE)
 
 
-	option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
+library_option(IMGLOADER_BUILD_TESTS "Build tests for imageloader" TRUE)
 
-	option(IMGLOADER_BUILD_EXAMPLES "Build examples for imageloader" TRUE)
+library_option(IMGLOADER_BUILD_EXAMPLES "Build examples for imageloader" TRUE)
 
-	option(IMGLOADER_BUILD_CPP_API "Build the C++ API" TRUE)
-endif()
+library_option(IMGLOADER_BUILD_CPP_API "Build the C++ API" TRUE)
 
 add_subdirectory(src)
 
