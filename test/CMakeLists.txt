@@ -9,13 +9,13 @@ set(TEST_SOURCES
 	src/util.h src/util.cpp
 )
 
-if (WITH_LIBDDSIMG)
+if (IMGLOADER_WITH_LIBDDSIMG)
 	set(TEST_SOURCES ${TEST_SOURCES} src/ddsimg.cpp)
 endif()
-if (WITH_PNG)
+if (IMGLOADER_WITH_PNG)
 	set(TEST_SOURCES ${TEST_SOURCES} src/png.cpp)
 endif()
-if (WITH_STB_IMAGE)
+if (IMGLOADER_WITH_STB_IMAGE)
 	set(TEST_SOURCES ${TEST_SOURCES} src/stb_image.cpp)
 endif()
 
