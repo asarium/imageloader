@@ -1,4 +1,5 @@
 
+message(STATUS "Building with stb_image plugin")
 add_library(plugin_stb_image STATIC plugin_stb_image.c plugin_stb_image.h stb_image.c stb_image.h)
 set_target_properties (plugin_stb_image PROPERTIES C_STANDARD 99)
 

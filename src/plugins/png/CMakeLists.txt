@@ -1,4 +1,5 @@
 
+message(STATUS "Building with libpng plugin")
 # If there is a png target, assume it's a target building libpng
 if (NOT TARGET png)
 	find_package(ZLIB REQUIRED)

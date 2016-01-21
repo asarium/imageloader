@@ -1,4 +1,6 @@
 
+message(STATUS "Building with libddsimg plugin")
+
 set(DDSIMG_BUILD_SHARED_LIB FALSE)
 set(DDSIMG_BUILD_TESTS FALSE)
 set(DDSIMG_BUILD_EXAMPLES FALSE)
