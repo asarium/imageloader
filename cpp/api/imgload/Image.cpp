@@ -7,6 +7,8 @@
 
 namespace
 {
+    using namespace imgload;
+
     ImgloadProperty convertProperty(imgload::Property prop)
     {
         switch (prop)
@@ -27,6 +29,23 @@ namespace
                 return IMGLOAD_PROPERTY_PLUGIN_DATA_4;
         }
         return IMGLOAD_PROPERTY_WIDTH;
+    }
+
+    ImgloadFormat imgloadFormat(imgload::DataFormat format)
+    {
+        switch (format)
+        {
+            case DataFormat::R8G8B8A8:
+                return IMGLOAD_FORMAT_R8G8B8A8;
+            case DataFormat::B8G8R8A8:
+                return IMGLOAD_FORMAT_B8G8R8A8;
+            case DataFormat::R8G8B8:
+                return IMGLOAD_FORMAT_R8G8B8;
+            case DataFormat::GRAY8:
+                return IMGLOAD_FORMAT_GRAY8;
+            default:
+                throw std::runtime_error("Unknown data format, C++ API probably incompatible with imgloader version!");
+        }
     }
 }
 
@@ -64,6 +83,8 @@ imgload::DataFormat imgload::Image::getFormat() const
     {
         case IMGLOAD_FORMAT_R8G8B8A8:
             return DataFormat::R8G8B8A8;
+        case IMGLOAD_FORMAT_B8G8R8A8:
+            return DataFormat::B8G8R8A8;
         case IMGLOAD_FORMAT_R8G8B8:
             return DataFormat::R8G8B8;
         case IMGLOAD_FORMAT_GRAY8:
@@ -197,4 +218,14 @@ ImgloadImageData imgload::SubImage::getImageData(size_t mipmap)
     }
 
     return data;
+}
+
+void Image::convertFormat(DataFormat requested, uint64_t param)
+{
+    auto err = imgload_image_transform_data(m_image, imgloadFormat(requested), param);
+
+    if (err != IMGLOAD_ERR_NO_ERROR)
+    {
+        throw Exception(err);
+    }
 }

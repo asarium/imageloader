@@ -13,6 +13,7 @@ namespace imgload
     enum class DataFormat
     {
         R8G8B8A8,
+        B8G8R8A8,
         R8G8B8,
         GRAY8,
     };
@@ -155,6 +156,8 @@ namespace imgload
         size_t numSubimages() const;
 
         SubImage getSubimage(size_t index) const;
+
+        void convertFormat(DataFormat requested, uint64_t param);
 
         void readData();
 

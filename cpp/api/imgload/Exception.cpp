@@ -28,6 +28,8 @@ const char* imgload::Exception::what() const noexcept
             return "The type of the property did not match";
         case IMGLOAD_ERR_FILE_INVALID:
             return "The file is not valid";
+        case IMGLOAD_ERR_UNSUPPORTED_CONVERSION:
+            return "The requested conversion is not supported";
         default:
             return "Unknown error";
     }
