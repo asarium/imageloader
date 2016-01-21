@@ -2,13 +2,15 @@
 
 #include <memory>
 
-typedef struct ImgloadContextImpl* ImgloadContext;
+#include <imageloader.h>
 
 namespace imgload
 {
     class MemoryAllocator
     {
     public:
+        virtual ~MemoryAllocator() {}
+
         virtual void* reallocate(void* mem, size_t size) = 0;
 
         virtual void free(void* mem) = 0;
@@ -25,12 +27,16 @@ namespace imgload
     class Logger
     {
     public:
+        virtual ~Logger() {}
+
         virtual void log(LogLevel level, const char* text) = 0;
     };
 
     class IOHandler
     {
     public:
+        virtual ~IOHandler() {}
+
         virtual size_t read(uint8_t* buf, size_t size) = 0;
 
         virtual int64_t seek(int64_t offset, int whence) = 0;

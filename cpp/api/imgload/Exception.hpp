@@ -11,9 +11,8 @@ namespace imgload
         ImgloadErrorCode m_err;
 
     public:
-        Exception(ImgloadErrorCode m_err) : m_err(m_err)
+        explicit Exception(ImgloadErrorCode m_err) : m_err(m_err)
         { }
-
 
         virtual const char* what() const noexcept;
     };

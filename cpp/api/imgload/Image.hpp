@@ -2,11 +2,7 @@
 
 #include "Context.hpp"
 
-#include <cstdint>
-
 #include <imageloader.h>
-
-typedef struct ImgloadImageImpl* ImgloadImage;
 
 namespace imgload
 {
