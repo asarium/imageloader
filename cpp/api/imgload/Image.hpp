@@ -4,6 +4,8 @@
 
 #include <imageloader.h>
 
+#include <cstdint>
+
 namespace imgload
 {
     enum class DataFormat
